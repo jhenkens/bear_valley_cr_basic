@@ -14,9 +14,9 @@
 		'MDT, MQ, & MAir
 			SDI12Recorder(SR50AT_2_M(),C3,"0","M7!",1,0,-1)
 			'Load the array to be sorted.
-			SR50AT_2(n,1) = SR50AT_2_M(1)
-			SR50AT_2(n,2) = SR50AT_2_M(2)
-			SR50AT_2(n,3) = SR50AT_2_M(3)
+			SR50AT_2(SR50AT_Counter_1,1) = SR50AT_2_M(1)
+			SR50AT_2(SR50AT_Counter_1,2) = SR50AT_2_M(2)
+			SR50AT_2(SR50AT_Counter_1,3) = SR50AT_2_M(3)
 			SR50AT_Counter_2 += 1
 			If SR50AT_Counter_2 > 11 Then
 				SR50AT_Counter_2 = 1
