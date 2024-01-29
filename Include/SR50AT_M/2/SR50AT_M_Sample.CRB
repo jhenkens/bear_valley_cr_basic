@@ -29,6 +29,6 @@
 					SR50AT_2_Offset = SR50AT_2_TCDT
 					SR50AT_MID_2 = False
 				EndIf
-				SR50AT_2_Snow_Depth = SR50AT_2_Offset - SR50AT_2_TCDT
+				SR50AT_2_Snow_Depth = SR50AT_2_Offset + SR50AT_2_TCDT
 			EndIf
 		EndIf
