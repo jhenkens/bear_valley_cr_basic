@@ -76,8 +76,8 @@ Include "Include/MW_15M.CRB"
 BeginProg
 	SR50AT_Counter_1 = 1
 	SR50AT_Counter_2 = 1
-	SR50AT_1_Offset = -31
-	SR50AT_2_Offset = -234
+	SR50AT_1_Initial_Depth = 31
+	SR50AT_2_Initial_Depth = 234
 	SR50ATCtrl_1 = True
 	SR50ATCtrl_2 = True
 

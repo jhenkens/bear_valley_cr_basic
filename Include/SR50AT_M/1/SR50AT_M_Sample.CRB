@@ -26,9 +26,9 @@
 				SR50AT_1_Q = Result_SR50AT_1(6,2)
 				SR50AT_1_AirTempC = Result_SR50AT_1(6,3)
 				If SR50AT_MID_1 Then
-					SR50AT_1_Offset = SR50AT_1_TCDT
+					SR50AT_1_Initial_Depth = SR50AT_1_TCDT
 					SR50AT_MID_1 = False
 				EndIf
-				SR50AT_1_Snow_Depth = SR50AT_1_Offset + SR50AT_1_TCDT
+				SR50AT_1_Snow_Depth = SR50AT_1_Initial_Depth - SR50AT_1_TCDT
 			EndIf
 		EndIf

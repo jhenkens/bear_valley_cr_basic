@@ -17,7 +17,7 @@ Public SR50AT_2_TCDT : Units SR50AT_2_TCDT = inches 'Temperature corrected dista
 Public SR50AT_2_Q : Units SR50AT_2_Q = unitless 'Quality number
 Public SR50AT_2_AirTempC : Units SR50AT_2_AirTempC = °C 'Air temperature
 
-Public SR50AT_2_Offset : Units SR50AT_2_Offset = inches 'Distance to ground.
+Public SR50AT_2_Initial_Depth : Units SR50AT_2_Initial_Depth = inches 'Distance to ground.
 Public SR50AT_2_Snow_Depth : Units SR50AT_2_Snow_Depth = inches 'Snow depth.
 
 'Controls SR50AT measurement. This flag can be manually controlled to
