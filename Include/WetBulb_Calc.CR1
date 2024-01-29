@@ -1,0 +1,34 @@
+
+		'Dew Point and Wet-Bulb calculation prep
+		AirTC=(5/9)*(AirTF-32)
+		SPkPa=74.11727
+		SatVP(SVp,AirTC)
+		Vp=RH*SVp/100
+		'Dew Point calculation 'TdF'
+		DewPoint(TdF,AirTC,RH)
+		If TdF>AirTC Or TdF=NAN Then TdF=AirTC
+		'Find Wet-Bulb 'TwF'
+		Top=AirTC
+		Bottom=TdF
+		For N = 1 To 25
+			Twpg=Twg
+			Twg=((Top-Bottom)/2)+Bottom
+			WetDryBulb(Vpg,AirTC,Twg,SPkPa)
+			VpgVpd=Vpg-Vp
+			Twch=ABS(Twpg-Twg)
+			If VpgVpd>0 Then
+				Top=Twg
+			Else
+				Bottom=Twg
+			EndIf
+			If Twch<0.01 Or N=25 Then ExitFor
+		Next
+		TwF=Twg
+		TdF=1.8*TdF+32
+		TwF=1.8*TwF+32
+
+
+		'Wind Chill calculation 'WC_F'
+		WC_F=35.74+0.6215*AirTF-35.75*WS_mph^0.16+0.4275*AirTF*WS_mph^0.16
+		If WC_F>AirTF Or WC_F=NAN Then WC_F=AirTF
+		If AirTF>50 OR WS_mph<3 Then WC_F=AirTF

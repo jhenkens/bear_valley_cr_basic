@@ -1,0 +1,93 @@
+'CR6 Series
+'Created by Short Cut (4.4)
+
+'Declare Variables and Units
+Public BattV
+Public PTemp_C
+Public AirTF
+Public RH
+Public SR50AT(3)
+Public DBTCDT
+Public SR50AT_2(3)
+Public DBTCDT_2
+Public Rain_in
+Public Temp_F
+Public WS_mph
+Public WindDir
+
+Alias SR50AT(1)=TCDT
+Alias SR50AT(2)=Q
+Alias SR50AT(3)=AirTC_2
+Alias SR50AT_2(1)=TCDT_2
+Alias SR50AT_2(2)=Q_2
+Alias SR50AT_2(3)=AirTC_3
+
+Units BattV=Volts
+Units PTemp_C=Deg C
+Units AirTF=Deg F
+Units RH=%
+Units Rain_in=inch
+Units Temp_F=Deg F
+Units WS_mph=miles/hour
+Units WindDir=degrees
+
+'Define Data Tables
+DataTable(Table1,True,-1)
+	DataInterval(0,60,Min,10)
+	Sample(1,AirTF,FP2)
+	Sample(1,RH,FP2)
+	Totalize(1,Rain_in,FP2,False)
+	FieldNames("Precip")
+	Sample(1,DBTCDT,FP2)
+	FieldNames("IntSnow")
+	Sample(1,DBTCDT_2,FP2)
+	FieldNames("TtlSnow")
+	Sample(1,BattV,FP2)
+	FieldNames("Battery")
+	Sample(1,PTemp_C,FP2)
+	FieldNames("CR6T_C")
+	Sample(1,AirTC_3,FP2)
+	FieldNames("TtlAirTC")
+	Sample(1,TCDT,FP2)
+	FieldNames("IntDist")
+	Sample(1,Q,FP2)
+	FieldNames("IntQ")
+	Sample(1,TCDT_2,FP2)
+	FieldNames("TtlDist")
+	Sample(1,Q_2,FP2)
+	FieldNames("TtlQ")
+	Average(1,WS_mph,FP2,False)
+	Maximum(1,WS_mph,FP2,False,False)
+	Sample(1,WindDir,FP2)
+EndTable
+
+'Main Program
+BeginProg
+	'Main Scan
+	Scan(1,Min,1,0)
+		'Default CR6 Datalogger Battery Voltage measurement 'BattV'
+		Battery(BattV)
+		'Default CR6 Datalogger Wiring Panel Temperature measurement 'PTemp_C'
+		PanelTemp(PTemp_C,60)
+		'HMP50/HMP60 Temperature & Relative Humidity Sensor measurements 'AirTF' and 'RH'
+		VoltSE(AirTF,1,mV1000,U1,False,0,60,0.18,-40)
+		VoltSE(RH,1,mV1000,U2,False,0,60,0.1,0)
+		If (RH>100) And (RH<108) Then RH=100
+		'SR50AT Sonic Ranging Sensor with Temperature Sensor (SDI-12 Output) measurements 'TCDT', 'Q', and 'AirTC_2' and calculation 'DBTCDT'
+		SDI12Recorder(SR50AT(),C1,"0","M7!",1,0,-1)
+		DBTCDT=31-TCDT
+		'SR50AT Sonic Ranging Sensor with Temperature Sensor (SDI-12 Output) measurements 'TCDT_2', 'Q_2', and 'AirTC_3' and calculation 'DBTCDT_2'
+		SDI12Recorder(SR50AT_2(),C3,"0","M7!",1,0,-1)
+		DBTCDT_2=234-TCDT_2
+		'Generic Tipping Bucket Rain Gauge measurement 'Rain_in'
+		PulseCount(Rain_in,1,U3,1,0,0.01,0)
+		'Type T Thermocouple measurements 'Temp_F'
+		TCDiff(Temp_F,1,mv200C,U5,TypeT,PTemp_C,True,0,60,1.8,32)
+		'05103 Wind Speed & Direction Sensor measurements 'WS_mph' and 'WindDir'
+		PulseCount(WS_mph,1,U10,5,1,0.2192,0)
+		BrHalf(WindDir,1,mV5000,U8,U7,1,2500,True,20000,60,355,0)
+		If WindDir>=355 Or WindDir<0 Then WindDir=0
+		'Call Data Tables and Store Data
+		CallTable Table1
+	NextScan
+EndProg

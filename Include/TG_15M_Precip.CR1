@@ -1,0 +1,11 @@
+
+DataTable(TG_15M_Precip,True,2880)
+	DataInterval(0,15,Min,10)
+
+	Totalize(1,Rain_in,FP2,False)
+	FieldNames("Precip")
+	Sample(1,DBTCDT_1,FP2)
+	FieldNames("IntSnow")
+	Sample(1,DBTCDT_2,FP2)
+	FieldNames("TtlSnow")
+EndTable
