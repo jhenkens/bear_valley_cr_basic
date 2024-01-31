@@ -1,0 +1,6 @@
+
+		'EE181 (constant power) Temperature & Relative Humidity Sensor measurements 'AirTF' and 'RH'
+		VoltSE(AirTF,1,mV2500,1,0,0,_60Hz,0.18,-40)
+		VoltSE(RH,1,mV2500,2,0,0,_60Hz,0.1,0)
+		'Type T Thermocouple measurements 'Temp_F'
+		TCDiff(Temp_F,1,mV2_5C,3,TypeT,PTemp_C,True,0,_60Hz,1.8,32)

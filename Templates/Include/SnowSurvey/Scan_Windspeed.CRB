@@ -1,0 +1,4 @@
+
+		'05103 Wind Speed & Direction Sensor measurements 'WS_mph' and 'WindDir'
+		PulseCount(WS_mph,1,U10,5,1,0.2192,0)
+		BrHalf(WindDir,1,mV5000,U8,U7,1,2500,True,20000,60,355,0)

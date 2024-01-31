@@ -1,26 +1,34 @@
-'CR1000
-'Created by Short Cut (4.4)
+'KoalaTop CR1000
+'Created with Jinja2 from bear_valley_cr_basic
 
 'Declare Variables and Units
-Public BattV
-Public PTemp_C
-Public AirTF
-Public RH
-Public WS_mph
-Public WS_3_sec_average
-Public WindDir
-Public Temp_F
+Public BattV: Units BattV=Volts
+Public PTemp_C : Units PTemp_C=Deg C
+Public WS_mph : Units WS_mph=miles/hour
+Public WS_3_sec_average : Units WS_3_sec_average=miles/hour
+Public WindDir : Units WindDir=degrees
+Public AirTF : Units AirTF=Deg F
+Public RH : Units RH=%
+Public Temp_F : Units Temp_F=Deg F
 
-Units BattV=Volts
-Units PTemp_C=Deg C
-Units AirTF=Deg F
-Units RH=%
-Units WS_mph=miles/hour
-Units WS_3_sec_average=miles/hour
-Units WindDir=degrees
-Units Temp_F=Deg F
 
-Include "Include/WetBulb_Vars.CR1"
+Dim AirTC
+Dim SPkPa
+Dim Twg
+Dim Twpg
+Dim Vpg
+Dim Vp
+Dim SVp
+Dim Twch
+Dim VpgVpd
+Dim Top
+Dim Bottom
+Dim N
+
+Public TdF : Units TdF=Deg F
+Public TwF : Units TwF=Deg F
+Public WC_F : Units WC_F=Deg F
+
 
 'Define Data Tables
 DataTable(Table1,True,-1)
@@ -44,29 +52,100 @@ DataTable(Table2,True,-1)
 	Maximum(1,WS_mph,FP2,False,False)
 EndTable
 
-Include "Include/TG_15S_Wind.CR1"
-Include "Include/TG_5Min_Temp.CR1"
-Include "Include/MW_15M.CR1"
 
+DataTable(TG_15S_Wind,True,178560)
+	DataInterval(0,15,Sec,10)
+	Maximum(1,WS_3_sec_average,FP2,False,False)
+	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
+	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
+EndTable
+
+DataTable(TG_5Min_Temp,True,8640)
+	DataInterval(0,5,Min,10)
+
+	Sample(1,AirTF,FP2)
+	Sample(1,WC_F,FP2)
+	Sample(1,TdF,FP2)
+	Sample(1,TwF,FP2)
+	Sample(1,RH,FP2)
+	Sample(1,BattV,FP2)
+EndTable
+
+DataTable(MW_15M,True,2000)
+	DataInterval(0,15,Min,10)
+	Sample(1,AirTF,FP2)
+	Sample(1,TdF,FP2)
+	Sample(1,TwF,FP2)
+	Sample(1,RH,FP2)
+
+	Average(1,WS_mph,FP2,False)
+	Maximum(1,WS_3_sec_average,FP2,False,False)
+	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
+	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
+	Sample(1,BattV,FP2)
+EndTable
+
+DataTable(Table10Min,True,-1)
+	DataInterval(0,10,Min,10)
+	Minimum(1,BattV,FP2,False,False)
+	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
+	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
+	Maximum(1,WS_3_sec_average,FP2,False,False)
+	FieldNames("WS_3_Sec_Gust_Max")
+EndTable
+
+DataTable(Table60Min,True,-1)
+	DataInterval(0,60,Min,10)
+	Sample(1,BattV,FP2)
+	Sample(1,AirTF,FP2)
+	Sample(1,RH,FP2)
+	Sample(1,WC_F,FP2)
+	Sample(1,TdF,FP2)
+	Sample(1,TwF,FP2)
+	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
+	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
+	Maximum(1,WS_3_sec_average,FP2,False,False)
+	FieldNames("WS_3_Sec_Gust_Max")
+EndTable
+
+DataTable(StationDaily,True,-1)
+	DataInterval(0,1440,Min,10)
+	Minimum(1,BattV,FP2,False,False)
+
+	Minimum(1,PTemp_C,FP2)
+	Minimum(1,Temp_F,FP2)
+	Average(1,PTemp_C,FP2)
+	Average(1,Temp_F,FP2)
+	
+	Maximum(1,PTemp_C,FP2)
+	Maximum(1,Temp_F,FP2)
+EndTable
 
 'Main Program
 BeginProg
 	'Main Scan
 	Scan(1,Sec,1,0)
-		'05108-45 Wind Speed & Direction Sensor measurements 'WS_mph' and 'WindDir'
+
 		'05108-45 Wind Speed and Direction Sensor measurements 'WS_mph' and 'WindDir'
 		PulseCount(WS_mph,1,1,1,1,0.3726,0)
 		BrHalf(WindDir,1,mV2500,3,1,1,2500,True,20000,_60Hz,355,0)
 		If WindDir>=355 Or WindDir<0 Then WindDir=0
 		AvgRun(WS_3_sec_average,1,WS_mph,3)
 
+
+		'Call Data Tables and Store Data
 		CallTable Table1
 		CallTable Table2
 		CallTable TG_15S_Wind
 		CallTable TG_5Min_Temp
 		CallTable MW_15M
+		CallTable Table10Min
+		CallTable Table60Min
+		CallTable StationDaily
 	NextScan
+
 	
+
 
 SlowSequence
 	'Non-Wind Scan
@@ -75,16 +154,53 @@ SlowSequence
 		Battery(BattV)
 		'Default CR1000 Datalogger Wiring Panel Temperature measurement 'PTemp_C'
 		PanelTemp(PTemp_C,_60Hz)
+		
+		
+
 		'EE181 (panel switched power) Temperature & Relative Humidity Sensor measurements 'AirTF' and 'RH'
 		PortSet(9,1)
 		Delay(0,2,Sec)
 		VoltSE(AirTF,1,mV2500,1,0,0,_60Hz,0.18,-40)
 		VoltSE(RH,1,mV2500,2,0,0,_60Hz,0.1,0)
 		PortSet(9,0)
-		If RH>100 And RH<103 Then RH=100
+
 		'Type T Thermocouple measurements 'Temp_F'
 		TCDiff(Temp_F,1,mV2_5C,3,TypeT,PTemp_C,True,0,_60Hz,1.8,32)
+		If RH>100 AND RH<108 Then RH=100
 
-		Include "Include/WetBulb_Calc.CR1"
+
+		'Dew Point and Wet-Bulb calculation prep
+		AirTC=(5/9)*(AirTF-32)
+		SPkPa=74.11727
+		SatVP(SVp,AirTC)
+		Vp=RH*SVp/100
+		'Dew Point calculation 'TdF'
+		DewPoint(TdF,AirTC,RH)
+		If TdF>AirTC Or TdF=NAN Then TdF=AirTC
+		'Find Wet-Bulb 'TwF'
+		Top=AirTC
+		Bottom=TdF
+		For N = 1 To 25
+			Twpg=Twg
+			Twg=((Top-Bottom)/2)+Bottom
+			WetDryBulb(Vpg,AirTC,Twg,SPkPa)
+			VpgVpd=Vpg-Vp
+			Twch=ABS(Twpg-Twg)
+			If VpgVpd>0 Then
+				Top=Twg
+			Else
+				Bottom=Twg
+			EndIf
+			If Twch<0.01 Or N=25 Then ExitFor
+		Next
+		TwF=Twg
+		TdF=1.8*TdF+32
+		TwF=1.8*TwF+32
+
+
+		'Wind Chill calculation 'WC_F'
+		WC_F=35.74+0.6215*AirTF-35.75*WS_mph^0.16+0.4275*AirTF*WS_mph^0.16
+		If WC_F>AirTF Or WC_F=NAN Then WC_F=AirTF
+		If AirTF>50 OR WS_mph<3 Then WC_F=AirTF
 	NextScan
 EndProg

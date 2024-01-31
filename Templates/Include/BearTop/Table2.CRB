@@ -1,0 +1,6 @@
+DataTable(Table2,True,-1)
+	DataInterval(0,1440,Min,10)
+	Minimum(1,BattV,FP2,False,False)
+	Sample(1,PTemp_C,FP2)
+	Sample(1,Temp_F,FP2)
+EndTable

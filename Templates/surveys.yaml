@@ -1,0 +1,41 @@
+shared:
+  main_scan_interval_count: 1
+  main_scan_interval_unit: Sec
+  panel_frequency_filter: 60
+  legacy_tables: []
+  sr50at_sensor_address:
+    - C1
+    - C3
+CR1000:
+  panel_frequency_filter: _60Hz
+stations:
+  - station_name: "Base"
+    model_series: "CR1000"
+    legacy_tables:
+      - name: Table1
+        file: Include/Base/Table1.CRB
+      - name: Table2
+        file: Include/Base/Table2.CRB
+  - station_name: "KoalaTop"
+    model_series: "CR1000"
+    legacy_tables:
+      - name: Table1
+        file: Include/KoalaTop/Table1.CRB
+      - name: Table2
+        file: Include/KoalaTop/Table2.CRB
+  - station_name: "SnowSurvey"
+    model_series: "CR6"
+    enable_precip_and_snow_sensors: true
+    enable_rain_gauge: true
+    legacy_tables:
+      - name: Table1
+        file: Include/SnowSurvey/Table1.CRB
+  - station_name: "BearTop"
+    model_series: "CR300"
+    legacy_tables:
+      - name: Table1
+        file: Include/BearTop/Table1.CRB
+      - name: Table2
+        file: Include/BearTop/Table2.CRB
+      - name: Table3
+        file: Include/BearTop/Table3.CRB

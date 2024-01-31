@@ -11,9 +11,7 @@ Dim VpgVpd
 Dim Top
 Dim Bottom
 Dim N
-Units TdF=Deg F
-Units TwF=Deg F
-Units WC_F=Deg F
-Public TdF
-Public TwF
-Public WC_F
+
+Public TdF : Units TdF=Deg F
+Public TwF : Units TwF=Deg F
+Public WC_F : Units WC_F=Deg F

@@ -1,0 +1,13 @@
+DataTable(Table1,True,-1)
+	DataInterval(0,60,Min,10)
+	Sample(1,BattV,FP2)
+	Sample(1,AirTF,FP2)
+	Sample(1,RH,FP2)
+	Average(1,WS_mph,FP2,False)
+	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
+	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
+	Maximum(1,WS_mph,FP2,False,False)
+	Sample(1,WC_F,FP2)
+	Sample(1,TdF,FP2)
+	Sample(1,TwF,FP2)
+EndTable

@@ -1,0 +1,122 @@
+'{{ station_name }} {{ model_series }}
+'Created with Jinja2 from bear_valley_cr_basic
+
+'Declare Variables and Units
+Public BattV: Units BattV=Volts
+Public PTemp_C : Units PTemp_C=Deg C
+Public WS_mph : Units WS_mph=miles/hour
+Public WS_3_sec_average : Units WS_3_sec_average=miles/hour
+Public WindDir : Units WindDir=degrees
+Public AirTF : Units AirTF=Deg F
+Public RH : Units RH=%
+Public Temp_F : Units Temp_F=Deg F
+
+{% include "Include/WetBulb_Vars.CRB" %}
+
+{% if enable_precip_and_snow_sensors %}
+{% with sensor_index=1 %}
+{% include "Include/SR50AT_M/SR50AT_M_Vars.CRB" %}
+
+{% endwith %}
+{% with sensor_index=2 %}
+{% include "Include/SR50AT_M/SR50AT_M_Vars.CRB" %}
+
+{% endwith %}
+{% endif %}
+
+
+'Define Data Tables
+{% for table in legacy_tables %}
+{% include table["file"] %}
+
+
+{% endfor %}
+{% include "Include/TG_15S_Wind.CRB" %}
+
+{% include "Include/TG_5Min_Temp.CRB" %}
+
+{% if enable_precip_and_snow_sensors %}
+{% include "Include/TG_15M_Precip.CRB" %}
+
+{% endif %}
+{% include "Include/MW_15M.CRB" %}
+
+{% include "Include/Table10Min.CRB" %}
+
+{% include "Include/Table60Min.CRB" %}
+
+{% include "Include/StationDaily.CRB" %}
+
+
+'Main Program
+BeginProg
+	{% if enable_precip_and_snow_sensors %}
+	SR50AT_Counter_1 = 1
+	SR50AT_Counter_2 = 1
+	SR50AT_1_Initial_Depth = 31
+	SR50AT_2_Initial_Depth = 234
+	SR50ATCtrl_1 = True
+	SR50ATCtrl_2 = True
+	{% endif %}
+	'Main Scan
+	Scan({{ main_scan_interval_count }},{{ main_scan_interval_unit }},1,0)
+		{% include ["Include/" + station_name + "/Scan_Windspeed.CRB", "Include/" + model_series + "/Scan_Windspeed.CRB", "Include/Scan_Windspeed.CRB"] %}
+
+		If WindDir>=355 Or WindDir<0 Then WindDir=0
+		AvgRun(WS_3_sec_average,1,WS_mph,3)
+
+		{% if enable_precip_and_snow_sensors %}
+		'Generic Tipping Bucket Rain Gauge measurement 'Rain_in'
+		PulseCount(Rain_in,1,U3,1,0,0.01,0)
+		{% endif %}
+
+		'Call Data Tables and Store Data
+		{% for table in legacy_tables %}
+		CallTable {{ table["name"] }}
+		{% endfor %}
+		CallTable TG_15S_Wind
+		CallTable TG_5Min_Temp
+		{% if enable_precip_and_snow_sensors %}
+		CallTable TG_15M_Precip
+
+		{% endif %}
+		CallTable MW_15M
+		CallTable Table10Min
+		CallTable Table60Min
+		CallTable StationDaily
+	NextScan
+
+	
+{% if enable_precip_and_snow_sensors %}
+SlowSequence
+	Scan(10,Sec,1,0)
+		{% with sensor_index=1 %}
+		{% include "Include/SR50AT_M/SR50AT_M_Sample.CRB" %}
+		{% endwith %}
+
+
+		{% with sensor_index=2 %}
+		{% include "Include/SR50AT_M/SR50AT_M_Sample.CRB" %}
+		{% endwith %}
+
+	NextScan
+{% endif %}
+
+
+SlowSequence
+	'Non-Wind Scan
+	Scan(60,Sec,1,0)
+		'Default {{ model_series }} Datalogger Battery Voltage measurement 'BattV'
+		Battery(BattV)
+		'Default {{ model_series }} Datalogger Wiring Panel Temperature measurement 'PTemp_C'
+		PanelTemp(PTemp_C,{{ panel_frequency_filter }})
+		
+		
+		{% include ["Include/" + station_name + "/Scan_Temperature.CRB", "Include/" + model_series + "/Scan_Temperature.CRB", "Include/Scan_Temperature.CRB"] %}
+
+		If RH>100 AND RH<108 Then RH=100
+
+		{% include "Include/WetBulb_Calc.CRB" %}
+
+	NextScan
+EndProg

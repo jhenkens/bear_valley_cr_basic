@@ -1,0 +1,39 @@
+DataTable(Table1,True,-1)
+	DataInterval(0,60,Min,10)
+	Sample(1,AirTF,FP2)
+	Sample(1,RH,FP2)
+
+	Totalize(1,Rain_in,FP2,False)
+	FieldNames("Precip")
+
+	Sample(1,SR50AT_1_Snow_Depth,FP2)
+	FieldNames("IntSnow")
+
+	Sample(1,SR50AT_2_Snow_Depth,FP2)
+	FieldNames("TtlSnow")
+
+	Sample(1,BattV,FP2)
+	FieldNames("Battery")
+	
+	Sample(1,PTemp_C,FP2)
+	FieldNames("CR6T_C")
+
+	Sample(1,SR50AT_2_AirTempC,FP2)
+	FieldNames("TtlAirTC")
+
+	Sample(1,SR50AT_1_TCDT,FP2)
+	FieldNames("IntDist")
+
+	Sample(1,SR50AT_1_Q,FP2)
+	FieldNames("IntQ")
+
+	Sample(1,SR50AT_2_TCDT,FP2)
+	FieldNames("TtlDist")
+
+	Sample(1,SR50AT_2_Q,FP2)
+	FieldNames("TtlQ")
+
+	Average(1,WS_mph,FP2,False)
+	Maximum(1,WS_mph,FP2,False,False)
+	Sample(1,WindDir,FP2)
+EndTable
