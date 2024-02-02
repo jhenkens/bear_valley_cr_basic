@@ -1,5 +1,5 @@
 shared:
-  main_scan_interval_count: 1
+  main_scan_interval_count: 5
   main_scan_interval_unit: Sec
   panel_frequency_filter: 60
   legacy_tables: []

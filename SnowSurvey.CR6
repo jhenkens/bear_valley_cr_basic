@@ -226,7 +226,7 @@ BeginProg
 	SR50ATCtrl_1 = True
 	SR50ATCtrl_2 = True
 	'Main Scan
-	Scan(1,Sec,1,0)
+	Scan(5,Sec,1,0)
 
 		'05103 Wind Speed & Direction Sensor measurements 'WS_mph' and 'WindDir'
 		PulseCount(WS_mph,1,U10,5,1,0.2192,0)

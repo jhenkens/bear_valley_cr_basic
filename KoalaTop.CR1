@@ -124,7 +124,7 @@ EndTable
 'Main Program
 BeginProg
 	'Main Scan
-	Scan(1,Sec,1,0)
+	Scan(5,Sec,1,0)
 
 		'05108-45 Wind Speed and Direction Sensor measurements 'WS_mph' and 'WindDir'
 		PulseCount(WS_mph,1,1,1,1,0.3726,0)
