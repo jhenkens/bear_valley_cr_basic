@@ -5,8 +5,8 @@ DataTable(StationDaily,True,-1)
 
 	Minimum(1,PTemp_C,FP2, False, False)
 	Minimum(1,Temp_F,FP2, False, False)
-	Average(1,PTemp_C,FP2, False, False)
-	Average(1,Temp_F,FP2, False, False)
+	Average(1,PTemp_C,FP2, False)
+	Average(1,Temp_F,FP2, False)
 	
 	Maximum(1,PTemp_C,FP2, False, False)
 	Maximum(1,Temp_F,FP2, False, False)
