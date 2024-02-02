@@ -5,7 +5,6 @@
 Public BattV: Units BattV=Volts
 Public PTemp_C : Units PTemp_C=Deg C
 Public WS_mph : Units WS_mph=miles/hour
-Public WS_3_sec_average : Units WS_3_sec_average=miles/hour
 Public WindDir : Units WindDir=degrees
 Public AirTF : Units AirTF=Deg F
 Public RH : Units RH=%
@@ -37,10 +36,10 @@ DataTable(Table1,True,-1)
 	Sample(1,TdF,FP2)
 	Sample(1,TwF,FP2)
 	Sample(1,RH,FP2)
-	Sample(1,WS_3_sec_average,FP2)
+	Sample(1,WS_mph,FP2)
 	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
 	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
-	Maximum(1,WS_3_sec_average,FP2,False,False)
+	Maximum(1,WS_mph,FP2,False,False)
 	Sample(1,BattV,FP2)
 EndTable
 
@@ -53,16 +52,17 @@ EndTable
 
 DataTable(Table3,True,-1)
 	DataInterval(0,10,Min,10)
-	Sample(1,WS_3_sec_average,FP2)
+	Sample(1,WS_mph,FP2)
 	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
 	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
-	Maximum(1,WS_3_sec_average,FP2,False,False)
+	Maximum(1,WS_mph,FP2,False,False)
 EndTable
 
 
 DataTable(TG_15S_Wind,True,178560)
 	DataInterval(0,15,Sec,10)
-	Maximum(1,WS_3_sec_average,FP2,False,False)
+	Maximum(1,WS_mph,FP2,False,False)
+	FieldNames("WS_3_sec_average_Max")
 	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
 	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
 EndTable
@@ -86,7 +86,10 @@ DataTable(MW_15M,True,2000)
 	Sample(1,RH,FP2)
 
 	Average(1,WS_mph,FP2,False)
-	Maximum(1,WS_3_sec_average,FP2,False,False)
+	
+	Maximum(1,WS_mph,FP2,False,False)
+	FieldNames("WS_3_sec_average_Max")
+
 	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
 	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
 	Sample(1,BattV,FP2)
@@ -97,7 +100,7 @@ DataTable(Table10Min,True,-1)
 	Minimum(1,BattV,FP2,False,False)
 	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
 	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
-	Maximum(1,WS_3_sec_average,FP2,False,False)
+	Maximum(1,WS_mph,FP2,False,False)
 	FieldNames("WS_3_Sec_Gust_Max")
 EndTable
 
@@ -111,7 +114,7 @@ DataTable(Table60Min,True,-1)
 	Sample(1,TwF,FP2)
 	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
 	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
-	Maximum(1,WS_3_sec_average,FP2,False,False)
+	Maximum(1,WS_mph,FP2,False,False)
 	FieldNames("WS_3_Sec_Gust_Max")
 EndTable
 
@@ -131,13 +134,12 @@ EndTable
 'Main Program
 BeginProg
 	'Main Scan
-	Scan(5,Sec,1,0)
+	Scan(3,Sec,1,0)
 
 		'05108-45 Wind Speed & Direction Sensor measurements 'WS_mph' and 'WindDir'
 		PulseCount(WS_mph,1,P_LL,1,1,0.3726,0)
 		BrHalf(WindDir,1,mV2500,1,VX1,1,2500,False,20000,60,355,0)
 		If WindDir>=355 Or WindDir<0 Then WindDir=0
-		AvgRun(WS_3_sec_average,1,WS_mph,3)
 
 
 		'Call Data Tables and Store Data

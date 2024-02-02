@@ -7,7 +7,10 @@ DataTable(MW_15M,True,2000)
 	Sample(1,RH,FP2)
 
 	Average(1,WS_mph,FP2,False)
-	Maximum(1,WS_3_sec_average,FP2,False,False)
+	
+	Maximum(1,WS_mph,FP2,False,False)
+	FieldNames("WS_3_sec_average_Max")
+
 	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
 	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
 	Sample(1,BattV,FP2)

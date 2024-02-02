@@ -5,7 +5,6 @@
 Public BattV: Units BattV=Volts
 Public PTemp_C : Units PTemp_C=Deg C
 Public WS_mph : Units WS_mph=miles/hour
-Public WS_3_sec_average : Units WS_3_sec_average=miles/hour
 Public WindDir : Units WindDir=degrees
 Public AirTF : Units AirTF=Deg F
 Public RH : Units RH=%
@@ -63,7 +62,6 @@ BeginProg
 		{% include ["Include/" + station_name + "/Scan_Windspeed.CRB", "Include/" + model_series + "/Scan_Windspeed.CRB", "Include/Scan_Windspeed.CRB"] %}
 
 		If WindDir>=355 Or WindDir<0 Then WindDir=0
-		AvgRun(WS_3_sec_average,1,WS_mph,3)
 
 		{% if enable_precip_and_snow_sensors %}
 		'Generic Tipping Bucket Rain Gauge measurement 'Rain_in'
