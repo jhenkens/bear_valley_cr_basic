@@ -93,6 +93,7 @@ Public SR50ATCtrl_2 As Boolean
 Public SR50AT_MID_2 As Boolean
 
 Public SR50AT_Counter_2 'used as a counter
+Public Rain_in : Units Rain_in=inch
 
 
 'Define Data Tables
