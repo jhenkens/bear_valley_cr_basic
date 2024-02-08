@@ -8,4 +8,7 @@ DataTable(Table1,True,-1)
 	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT,WindDir_SD1_WVT")
 	Sample(1,AirTF,FP2)
 	Sample(1,RH,FP2)
+	Sample(1,TdF,FP2)
+	Sample(1,TwF,FP2)
+	Sample(1,WC_F,FP2)
 EndTable

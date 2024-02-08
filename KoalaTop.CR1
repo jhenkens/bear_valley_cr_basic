@@ -27,6 +27,8 @@ Dim Bottom
 Dim N
 
 
+
+
 'Define Data Tables
 DataTable(Table1,True,-1)
 	DataInterval(0,60,Min,10)

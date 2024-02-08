@@ -2,15 +2,17 @@
 'Created with Jinja2 from bear_valley_cr_basic
 
 'Declare Variables and Units
-Public BattV: Units BattV=Volts
-Public PTemp_C : Units PTemp_C=Deg C
+Public AirTF : Units AirTF=Deg F
+Public TdF : Units TdF=Deg F
+Public TwF : Units TwF=Deg F
+Public RH : Units RH=%
 Public WS_mph : Units WS_mph=miles/hour
 Public WindDir : Units WindDir=degrees
-Public AirTF : Units AirTF=Deg F
-Public RH : Units RH=%
-Public Temp_F : Units Temp_F=Deg F
+Public WC_F : Units WC_F=Deg F
+Public BattV: Units BattV=Volts
 
-
+Dim Temp_F
+Dim PTemp_C
 Dim AirTC
 Dim SPkPa
 Dim Twg
@@ -24,9 +26,7 @@ Dim Top
 Dim Bottom
 Dim N
 
-Public TdF : Units TdF=Deg F
-Public TwF : Units TwF=Deg F
-Public WC_F : Units WC_F=Deg F
+
 
 'SR50AT Variable Code - Sensor # 1
 'Single measured values.
