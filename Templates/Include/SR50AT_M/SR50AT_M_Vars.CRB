@@ -1,33 +1,33 @@
 
 'SR50AT Variable Code - Sensor # {{ sensor_index }}
 'Single measured values.
-Public SR50AT_{{ sensor_index }}_M(3)
+Dim SR50AT_{{ sensor_index }}_M(3)
 Alias SR50AT_{{ sensor_index }}_M(1) = DT_{{ sensor_index }}_M : Units DT_{{ sensor_index }}_M = inches 'Distance from the SR50AT.
 Alias SR50AT_{{ sensor_index }}_M(2) = Q_{{ sensor_index }}_M : Units Q_{{ sensor_index }}_M = unitless 'Quality number.
 Alias SR50AT_{{ sensor_index }}_M(3) = Air_{{ sensor_index }}_M : Units Air_{{ sensor_index }}_M = °C 'Air temperature.
 'Array to hold 11 SR50AT measurements composed of a distance and
 'quality number, and air temperature.
-Public SR50AT_{{ sensor_index }}(11,3)
+Dim SR50AT_{{ sensor_index }}(11,3)
 
 'Sorted array of 11 SR50AT measurements composed of a distance and
 'quality number, and temperature. Measurements are sorted by the 
 'distance value from smallest
-Public Result_SR50AT_{{ sensor_index }}(11,3)
+Dim Result_SR50AT_{{ sensor_index }}(11,3)
 
-Public SR50AT_{{ sensor_index }}_TCDT : Units SR50AT_{{ sensor_index }}_TCDT = inches 'Temperature corrected distance
-Public SR50AT_{{ sensor_index }}_Q : Units SR50AT_{{ sensor_index }}_Q = unitless 'Quality number
-Public SR50AT_{{ sensor_index }}_AirTempC : Units SR50AT_{{ sensor_index }}_AirTempC = °C 'Air temperature
+Dim SR50AT_{{ sensor_index }}_TCDT : Units SR50AT_{{ sensor_index }}_TCDT = inches 'Temperature corrected distance
+Dim SR50AT_{{ sensor_index }}_Q : Units SR50AT_{{ sensor_index }}_Q = unitless 'Quality number
+Dim SR50AT_{{ sensor_index }}_AirTempC : Units SR50AT_{{ sensor_index }}_AirTempC = °C 'Air temperature
 
-Public SR50AT_{{ sensor_index }}_Initial_Depth : Units SR50AT_{{ sensor_index }}_Initial_Depth = inches 'Distance to ground.
+Dim SR50AT_{{ sensor_index }}_Initial_Depth : Units SR50AT_{{ sensor_index }}_Initial_Depth = inches 'Distance to ground.
 Public SR50AT_{{ sensor_index }}_Snow_Depth : Units SR50AT_{{ sensor_index }}_Snow_Depth = inches 'Snow depth.
 
 'Controls SR50AT measurement. This flag can be manually controlled to
 'run tests in the field or is automatically set 2 minutes before the
 'hourly data storage interval. This is done so 11 measurements can
 'be made and sorted before the values are stored.
-Public SR50ATCtrl_{{ sensor_index }} As Boolean
+Dim SR50ATCtrl_{{ sensor_index }} As Boolean
 'Set this flag to measure and store the initial distance from the
 'SR50AT to the ground.
-Public SR50AT_MID_{{ sensor_index }} As Boolean
+Dim SR50AT_MID_{{ sensor_index }} As Boolean
 
-Public SR50AT_Counter_{{ sensor_index }} 'used as a counter
+Dim SR50AT_Counter_{{ sensor_index }} 'used as a counter

@@ -35,7 +35,7 @@ Dim N
 {% with sensor_index=2 %}
 {% include "Include/SR50AT_M/SR50AT_M_Vars.CRB" %}
 
-Public Rain_in : Units Rain_in=inch
+Dim Rain_in : Units Rain_in=inch
 {% endwith %}
 {% endif %}
 
