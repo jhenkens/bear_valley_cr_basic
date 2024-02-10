@@ -1,16 +1,32 @@
-'SnowSurvey CR6
-'Created with Jinja2 from bear_valley_cr_basic
+'CR6 Series
+'Created by Short Cut (4.4)
 
 'Declare Variables and Units
-Public AirTF : Units AirTF=Deg F
-Public TdF : Units TdF=Deg F
-Public TwF : Units TwF=Deg F
-Public RH : Units RH=%
-Public WS_mph : Units WS_mph=miles/hour
-Public WindDir : Units WindDir=degrees
-Public WC_F : Units WC_F=Deg F
-Public BattV: Units BattV=Volts
+Public AirTF
+Public TdF
+Public TwF
+Public RH
+Public WS_mph
+Public WindDir
+Public WC_F
+Public BattV
 
+
+Units BattV=Volts
+Units PTemp_C=Deg C
+Units AirTF=Deg F
+Units RH=%
+Units Rain_in=inch
+Units Temp_F=Deg F
+Units WS_mph=miles/hour
+Units WS_3_sec_average=miles/hour
+Units WindDir=degrees
+Units TdF=Deg F
+Units TwF=Deg F
+Units WC_F=Deg F
+
+Dim Rain_in
+Dim WS_3_sec_average
 Dim Temp_F
 Dim PTemp_C
 Dim AirTC
@@ -27,74 +43,69 @@ Dim Bottom
 Dim N
 
 
-
-'SR50AT Variable Code - Sensor # 1
 'Single measured values.
-Public SR50AT_1_M(3)
+Dim SR50AT_1_M(3)
 Alias SR50AT_1_M(1) = DT_1_M : Units DT_1_M = inches 'Distance from the SR50AT.
 Alias SR50AT_1_M(2) = Q_1_M : Units Q_1_M = unitless 'Quality number.
 Alias SR50AT_1_M(3) = Air_1_M : Units Air_1_M = °C 'Air temperature.
 'Array to hold 11 SR50AT measurements composed of a distance and
 'quality number, and air temperature.
-Public SR50AT_1(11,3)
+Dim SR50AT_1(11,3)
 
 'Sorted array of 11 SR50AT measurements composed of a distance and
 'quality number, and temperature. Measurements are sorted by the 
 'distance value from smallest
-Public Result_SR50AT_1(11,3)
+Dim Result_SR50AT_1(11,3)
 
-Public SR50AT_1_TCDT : Units SR50AT_1_TCDT = inches 'Temperature corrected distance
-Public SR50AT_1_Q : Units SR50AT_1_Q = unitless 'Quality number
-Public SR50AT_1_AirTempC : Units SR50AT_1_AirTempC = °C 'Air temperature
+Dim SR50AT_1_TCDT : Units SR50AT_1_TCDT = inches 'Temperature corrected distance
+Dim SR50AT_1_Q : Units SR50AT_1_Q = unitless 'Quality number
+Dim SR50AT_1_AirTempC : Units SR50AT_1_AirTempC = °C 'Air temperature
 
-Public SR50AT_1_Initial_Depth : Units SR50AT_1_Initial_Depth = inches 'Distance to ground.
+Dim SR50AT_1_Initial_Depth : Units SR50AT_1_Initial_Depth = inches 'Distance to ground.
 Public SR50AT_1_Snow_Depth : Units SR50AT_1_Snow_Depth = inches 'Snow depth.
 
 'Controls SR50AT measurement. This flag can be manually controlled to
 'run tests in the field or is automatically set 2 minutes before the
 'hourly data storage interval. This is done so 11 measurements can
 'be made and sorted before the values are stored.
-Public SR50ATCtrl_1 As Boolean
+Dim SR50ATCtrl_1 As Boolean
 'Set this flag to measure and store the initial distance from the
 'SR50AT to the ground.
-Public SR50AT_MID_1 As Boolean
+Dim SR50AT_MID_1 As Boolean
 
-Public SR50AT_Counter_1 'used as a counter
+Dim SR50AT_Counter_1 'used as a counter
 
-'SR50AT Variable Code - Sensor # 2
 'Single measured values.
-Public SR50AT_2_M(3)
+Dim SR50AT_2_M(3)
 Alias SR50AT_2_M(1) = DT_2_M : Units DT_2_M = inches 'Distance from the SR50AT.
 Alias SR50AT_2_M(2) = Q_2_M : Units Q_2_M = unitless 'Quality number.
 Alias SR50AT_2_M(3) = Air_2_M : Units Air_2_M = °C 'Air temperature.
 'Array to hold 11 SR50AT measurements composed of a distance and
 'quality number, and air temperature.
-Public SR50AT_2(11,3)
+Dim SR50AT_2(11,3)
 
 'Sorted array of 11 SR50AT measurements composed of a distance and
 'quality number, and temperature. Measurements are sorted by the 
 'distance value from smallest
-Public Result_SR50AT_2(11,3)
+Dim Result_SR50AT_2(11,3)
 
-Public SR50AT_2_TCDT : Units SR50AT_2_TCDT = inches 'Temperature corrected distance
-Public SR50AT_2_Q : Units SR50AT_2_Q = unitless 'Quality number
-Public SR50AT_2_AirTempC : Units SR50AT_2_AirTempC = °C 'Air temperature
+Dim SR50AT_2_TCDT : Units SR50AT_2_TCDT = inches 'Temperature corrected distance
+Dim SR50AT_2_Q : Units SR50AT_2_Q = unitless 'Quality number
+Dim SR50AT_2_AirTempC : Units SR50AT_2_AirTempC = °C 'Air temperature
 
-Public SR50AT_2_Initial_Depth : Units SR50AT_2_Initial_Depth = inches 'Distance to ground.
+Dim SR50AT_2_Initial_Depth : Units SR50AT_2_Initial_Depth = inches 'Distance to ground.
 Public SR50AT_2_Snow_Depth : Units SR50AT_2_Snow_Depth = inches 'Snow depth.
 
 'Controls SR50AT measurement. This flag can be manually controlled to
 'run tests in the field or is automatically set 2 minutes before the
 'hourly data storage interval. This is done so 11 measurements can
 'be made and sorted before the values are stored.
-Public SR50ATCtrl_2 As Boolean
+Dim SR50ATCtrl_2 As Boolean
 'Set this flag to measure and store the initial distance from the
 'SR50AT to the ground.
-Public SR50AT_MID_2 As Boolean
+Dim SR50AT_MID_2 As Boolean
 
-Public SR50AT_Counter_2 'used as a counter
-Public Rain_in : Units Rain_in=inch
-
+Dim SR50AT_Counter_2 'used as a counter
 
 'Define Data Tables
 DataTable(Table1,True,-1)
@@ -134,14 +145,17 @@ DataTable(Table1,True,-1)
 
 	Average(1,WS_mph,FP2,False)
 	Maximum(1,WS_mph,FP2,False,False)
-	Sample(1,WindDir,FP2)
+	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
+	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
+	Sample(1,WC_F,FP2)
+	Sample(1,TdF,FP2)
+	Sample(1,TwF,FP2)
 EndTable
 
 
 DataTable(TG_15S_Wind,True,178560)
 	DataInterval(0,15,Sec,10)
-	Maximum(1,WS_mph,FP2,False,False)
-	FieldNames("WS_3_sec_average_Max")
+	Maximum(1,WS_3_sec_average,FP2,False,False)
 	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
 	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
 EndTable
@@ -176,49 +190,10 @@ DataTable(MW_15M,True,2000)
 	Sample(1,RH,FP2)
 
 	Average(1,WS_mph,FP2,False)
-	
-	Maximum(1,WS_mph,FP2,False,False)
-	FieldNames("WS_3_sec_average_Max")
-
+	Maximum(1,WS_3_sec_average,FP2,False,False)
 	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
 	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
 	Sample(1,BattV,FP2)
-EndTable
-
-DataTable(Table10Min,True,-1)
-	DataInterval(0,10,Min,10)
-	Minimum(1,BattV,FP2,False,False)
-	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
-	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
-	Maximum(1,WS_mph,FP2,False,False)
-	FieldNames("WS_3_Sec_Gust_Max")
-EndTable
-
-DataTable(Table60Min,True,-1)
-	DataInterval(0,60,Min,10)
-	Sample(1,BattV,FP2)
-	Sample(1,AirTF,FP2)
-	Sample(1,RH,FP2)
-	Sample(1,WC_F,FP2)
-	Sample(1,TdF,FP2)
-	Sample(1,TwF,FP2)
-	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
-	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
-	Maximum(1,WS_mph,FP2,False,False)
-	FieldNames("WS_3_Sec_Gust_Max")
-EndTable
-
-DataTable(StationDaily,True,-1)
-	DataInterval(0,1440,Min,10)
-	Minimum(1,BattV,FP2,False,False)
-
-	Minimum(1,PTemp_C,FP2, False, False)
-	Minimum(1,Temp_F,FP2, False, False)
-	Average(1,PTemp_C,FP2, False)
-	Average(1,Temp_F,FP2, False)
-	
-	Maximum(1,PTemp_C,FP2, False, False)
-	Maximum(1,Temp_F,FP2, False, False)
 EndTable
 
 'Main Program
@@ -229,13 +204,14 @@ BeginProg
 	SR50AT_2_Initial_Depth = 234
 	SR50ATCtrl_1 = True
 	SR50ATCtrl_2 = True
-	'Main Scan
-	Scan(3,Sec,1,0)
 
+	'Main Scan
+	Scan(1,Sec,1,0)
 		'05103 Wind Speed & Direction Sensor measurements 'WS_mph' and 'WindDir'
 		PulseCount(WS_mph,1,U10,5,1,0.2192,0)
 		BrHalf(WindDir,1,mV5000,U8,U7,1,2500,True,20000,60,355,0)
 		If WindDir>=355 Or WindDir<0 Then WindDir=0
+		AvgRun(WS_3_sec_average,1,WS_mph,3)
 
 		'Generic Tipping Bucket Rain Gauge measurement 'Rain_in'
 		PulseCount(Rain_in,1,U3,1,0,0.01,0)
@@ -245,17 +221,12 @@ BeginProg
 		CallTable TG_15S_Wind
 		CallTable TG_5Min_Temp
 		CallTable TG_15M_Precip
-
 		CallTable MW_15M
-		CallTable Table10Min
-		CallTable Table60Min
-		CallTable StationDaily
 	NextScan
-
 	
 SlowSequence
 	Scan(10,Sec,1,0)
-		'SR50AT Sample Code - Sensor # 1
+
 		'Automated snow depth measurement. Must occur two minutes before
 		'actual storage time to get 11 measurements completed.
 		If TimeIntoInterval (13,15,Min) Then
@@ -290,7 +261,6 @@ SlowSequence
 			EndIf
 		EndIf
 
-		'SR50AT Sample Code - Sensor # 2
 		'Automated snow depth measurement. Must occur two minutes before
 		'actual storage time to get 11 measurements completed.
 		If TimeIntoInterval (13,15,Min) Then
@@ -306,9 +276,9 @@ SlowSequence
 		'MDT, MQ, & MAir
 			SDI12Recorder(SR50AT_2_M(),C3,"0","M7!",1,0,-1)
 			'Load the array to be sorted.
-			SR50AT_2(SR50AT_Counter_2,1) = SR50AT_2_M(1)
-			SR50AT_2(SR50AT_Counter_2,2) = SR50AT_2_M(2)
-			SR50AT_2(SR50AT_Counter_2,3) = SR50AT_2_M(3)
+			SR50AT_2(SR50AT_Counter_1,1) = SR50AT_2_M(1)
+			SR50AT_2(SR50AT_Counter_1,2) = SR50AT_2_M(2)
+			SR50AT_2(SR50AT_Counter_1,3) = SR50AT_2_M(3)
 			SR50AT_Counter_2 += 1
 			If SR50AT_Counter_2 > 11 Then
 				SR50AT_Counter_2 = 1
@@ -326,7 +296,6 @@ SlowSequence
 		EndIf
 	NextScan
 
-
 SlowSequence
 	'Non-Wind Scan
 	Scan(60,Sec,1,0)
@@ -334,15 +303,12 @@ SlowSequence
 		Battery(BattV)
 		'Default CR6 Datalogger Wiring Panel Temperature measurement 'PTemp_C'
 		PanelTemp(PTemp_C,60)
-		
-		
-
 		'HMP50/HMP60 Temperature & Relative Humidity Sensor measurements 'AirTF' and 'RH'
 		VoltSE(AirTF,1,mV1000,U1,False,0,60,0.18,-40)
 		VoltSE(RH,1,mV1000,U2,False,0,60,0.1,0)
+		If (RH>100) And (RH<108) Then RH=100
 		'Type T Thermocouple measurements 'Temp_F'
 		TCDiff(Temp_F,1,mv200C,U5,TypeT,PTemp_C,True,0,60,1.8,32)
-		If RH>100 AND RH<108 Then RH=100
 
 
 		'Dew Point and Wet-Bulb calculation prep
