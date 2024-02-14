@@ -1,5 +1,5 @@
 
-DataTable(StationDaily,True,-1)
+DataTable(StationDaily,True,30)
 	DataInterval(0,1440,Min,10)
 	Minimum(1,BattV,FP2,False,False)
 

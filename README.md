@@ -22,5 +22,5 @@ The C command is for concurrent mode. Concurrent mode allows multiple sensors on
 
 
 ### TODO
-1. Deploy new configurations
-2. Change Grafana interface to be more Bear Valley (see https://volkovlabs.io/blog/how-to-customize-the-grafana-user-interface-8d70a42dc2b6/)
+1. Add ping and self-reboot to CR300 at beartop (slash all dataloggers? via mini timer relay from amazon).
+2. If we do it via "Watchdog" (see function 24) (can be a 5 minute timer, 15s reset). We can combine with Ping, and ping every minute, and reset if we cannot ping. We can also add an exlusion period each day to force reset.

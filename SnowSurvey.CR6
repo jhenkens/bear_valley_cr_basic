@@ -190,7 +190,7 @@ DataTable(MW_15M,True,2000)
 	Sample(1,BattV,FP2)
 EndTable
 
-DataTable(Table10Min,True,-1)
+DataTable(Table10Min,True,4320)
 	DataInterval(0,10,Min,10)
 	Minimum(1,BattV,FP2,False,False)
 	Sample(1,AirTF,FP2)
@@ -204,7 +204,7 @@ DataTable(Table10Min,True,-1)
 	FieldNames("WS_3_Sec_Gust_Max")
 EndTable
 
-DataTable(Table60Min,True,-1)
+DataTable(Table60Min,True,720)
 	DataInterval(0,60,Min,10)
 	Sample(1,BattV,FP2)
 	Sample(1,AirTF,FP2)
@@ -218,7 +218,7 @@ DataTable(Table60Min,True,-1)
 	FieldNames("WS_3_Sec_Gust_Max")
 EndTable
 
-DataTable(StationDaily,True,-1)
+DataTable(StationDaily,True,30)
 	DataInterval(0,1440,Min,10)
 	Minimum(1,BattV,FP2,False,False)
 

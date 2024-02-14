@@ -1,5 +1,5 @@
 
-DataTable(Table10Min,True,-1)
+DataTable(Table10Min,True,4320)
 	DataInterval(0,10,Min,10)
 	Minimum(1,BattV,FP2,False,False)
 	Sample(1,AirTF,FP2)
