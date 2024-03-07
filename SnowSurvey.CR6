@@ -1,6 +1,5 @@
 'SnowSurvey CR6
 'Created with Jinja2 from bear_valley_cr_basic
-'Modified for Barometric Sensor_03/07/2024
 
 'Declare Variables and Units
 Public AirTF : Units AirTF=Deg F
@@ -10,7 +9,6 @@ Public RH : Units RH=%
 Public WS_mph : Units WS_mph=miles/hour
 Public WindDir : Units WindDir=degrees
 Public WC_F : Units WC_F=Deg F
-Public BaroVUE(3)
 Public BattV: Units BattV=Volts
 
 Dim Temp_F
@@ -28,13 +26,7 @@ Dim Top
 Dim Bottom
 Dim N
 
-Alias BaroVUE(1)=BaroV_BP
-Alias BaroVUE(2)=BaroV_Temp
-Alias BaroVUE(3)=BaroV_Qual
 
-Units BaroV_BP=inHg
-Units BaroV_Temp=deg F
-Units BaroV_Qual=unitless
 
 'SR50AT Variable Code - Sensor # 1
 'Single measured values.
@@ -102,6 +94,11 @@ Dim SR50AT_MID_2 As Boolean
 
 Dim SR50AT_Counter_2 'used as a counter
 Dim Rain_in : Units Rain_in=inch
+Public BaroVUE(3)
+
+Alias BaroVUE(1)=BaroV_BP : Units BaroV_BP=inHg
+Alias BaroVUE(2)=BaroV_Temp : Units BaroV_Temp=deg F
+Alias BaroVUE(3)=BaroV_Qual : Units BaroV_Qual=unitless
 
 
 'Define Data Tables
@@ -180,6 +177,9 @@ DataTable(TG_15M_Precip,True,2880)
 	FieldNames("IntSnow")
 	Sample(1,SR50AT_2_Snow_Depth,FP2)
 	FieldNames("TtlSnow")
+
+	Sample(1,BaroV_BP,IEEE4)
+	FieldNames("BarometricPressure")
 EndTable
 
 DataTable(MW_15M,True,2000)
@@ -225,6 +225,14 @@ DataTable(Table60Min,True,720)
 	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
 	Maximum(1,WS_mph,FP2,False,False)
 	FieldNames("WS_3_Sec_Gust_Max")
+
+	Totalize(1,Rain_in,FP2,False)
+	FieldNames("Precip")
+	Sample(1,SR50AT_1_Snow_Depth,FP2)
+	FieldNames("IntSnow")
+	Sample(1,SR50AT_2_Snow_Depth,FP2)
+	FieldNames("TtlSnow")
+
 EndTable
 
 DataTable(StationDaily,True,30)
@@ -354,16 +362,15 @@ SlowSequence
 		'Default CR6 Datalogger Wiring Panel Temperature measurement 'PTemp_C'
 		PanelTemp(PTemp_C,60)
 		
-		
 
 		'EE181 (constant power) Temperature & Relative Humidity Sensor measurements 'AirTF' and 'RH'
-		VoltSe(AirTF,1,mV1000,U1,False,0,60,0.18,-40)
+		VoltSE(AirTF,1,mV1000,U1,False,0,60,0.18,-40)
 		VoltSE(RH,1,mV1000,U2,False,0,60,0.1,0)
 		'Type T Thermocouple measurements 'Temp_F'
 		TCDiff(Temp_F,1,mv200C,U5,TypeT,PTemp_C,True,0,60,1.8,32)
 		If RH>100 AND RH<108 Then RH=100
 
-    'BaroVUE10 (SDI-12) Barometric Pressure Sensor measurements 'BaroV_BP', 'BaroV_Temp', and 'BaroV_Qual'
+		'BaroVUE10 (SDI-12) Barometric Pressure Sensor measurements 'BaroV_BP', 'BaroV_Temp', and 'BaroV_Qual'
 		SDI12Recorder(BaroVUE(),U11,"3","M!",1,0,-1)
 		'Correct BaroVUE10 (SDI-12) Barometric Pressure Sensor 'BaroV_BP' measurement from station pressure to sea level pressure
 		BaroV_BP=BaroV_BP+1013.25*(1-(1-2375/44307.69231)^5.25328)

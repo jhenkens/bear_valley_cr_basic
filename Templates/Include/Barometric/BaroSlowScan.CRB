@@ -1,0 +1,8 @@
+		'BaroVUE10 (SDI-12) Barometric Pressure Sensor measurements 'BaroV_BP', 'BaroV_Temp', and 'BaroV_Qual'
+		SDI12Recorder(BaroVUE(),U11,"3","M!",1,0,-1)
+		'Correct BaroVUE10 (SDI-12) Barometric Pressure Sensor 'BaroV_BP' measurement from station pressure to sea level pressure
+		BaroV_BP=BaroV_BP+1013.25*(1-(1-2375/44307.69231)^5.25328)
+		'Convert BaroVUE10 (SDI-12) Barometric Pressure Sensor measurement 'BaroV_BP' from hPa (mbar) to inHg
+		BaroV_BP=BaroV_BP*0.02953
+		'Convert BaroVUE10 (SDI-12) Barometric Pressure Sensor measurement 'BaroV_Temp' from deg C to deg F
+		BaroV_Temp=BaroV_Temp*1.8+32

@@ -1,5 +1,5 @@
 
-		'HMP50/HMP60 Temperature & Relative Humidity Sensor measurements 'AirTF' and 'RH'
+		'EE181 (constant power) Temperature & Relative Humidity Sensor measurements 'AirTF' and 'RH'
 		VoltSE(AirTF,1,mV1000,U1,False,0,60,0.18,-40)
 		VoltSE(RH,1,mV1000,U2,False,0,60,0.1,0)
 		'Type T Thermocouple measurements 'Temp_F'

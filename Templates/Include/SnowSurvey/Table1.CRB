@@ -41,4 +41,5 @@ DataTable(Table1,True,-1)
 	Sample(1,WC_F,FP2)
 	Sample(1,TdF,FP2)
 	Sample(1,TwF,FP2)
+	Sample(1,BaroV_BP,IEEE4)
 EndTable

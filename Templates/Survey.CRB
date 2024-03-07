@@ -36,6 +36,11 @@ Dim N
 {% include "Include/SR50AT_M/SR50AT_M_Vars.CRB" %}
 
 Dim Rain_in : Units Rain_in=inch
+Public BaroVUE(3)
+
+Alias BaroVUE(1)=BaroV_BP : Units BaroV_BP=inHg
+Alias BaroVUE(2)=BaroV_Temp : Units BaroV_Temp=deg F
+Alias BaroVUE(3)=BaroV_Qual : Units BaroV_Qual=unitless
 {% endwith %}
 {% endif %}
 
@@ -125,10 +130,13 @@ SlowSequence
 		'Default {{ model_series }} Datalogger Wiring Panel Temperature measurement 'PTemp_C'
 		PanelTemp(PTemp_C,{{ panel_frequency_filter }})
 		
-		
 		{% include ["Include/" + station_name + "/Scan_Temperature.CRB", "Include/" + model_series + "/Scan_Temperature.CRB", "Include/Scan_Temperature.CRB"] %}
 
 		If RH>100 AND RH<108 Then RH=100
+
+{% if enable_precip_and_snow_sensors %}
+		{% include "Include/Barometric/BaroSlowScan.CRB" %}
+{% endif %}
 
 		{% include "Include/WetBulb_Calc.CRB" %}
 

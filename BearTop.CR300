@@ -121,6 +121,8 @@ DataTable(Table60Min,True,720)
 	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
 	Maximum(1,WS_mph,FP2,False,False)
 	FieldNames("WS_3_Sec_Gust_Max")
+
+
 EndTable
 
 DataTable(StationDaily,True,30)
@@ -170,7 +172,6 @@ SlowSequence
 		'Default CR300 Datalogger Wiring Panel Temperature measurement 'PTemp_C'
 		PanelTemp(PTemp_C,60)
 		
-		
 
 		'EE181 (panel switched power) Temperature & Relative Humidity Sensor measurements 'AirTF' and 'RH'
 		SW12(1)
@@ -181,6 +182,7 @@ SlowSequence
 		'Type T Thermocouple measurements 'Temp_F'
 		TCDiff(Temp_F,1,mv34,3,TypeT,PTemp_C,True,0,60,1.8,32)
 		If RH>100 AND RH<108 Then RH=100
+
 
 
 		'Dew Point and Wet-Bulb calculation prep
