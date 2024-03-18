@@ -26,7 +26,6 @@ stations:
   - station_name: "SnowSurvey"
     model_series: "CR6"
     enable_precip_and_snow_sensors: true
-    enable_rain_gauge: true
     legacy_tables:
       - name: Table1
         file: Include/SnowSurvey/Table1.CRB

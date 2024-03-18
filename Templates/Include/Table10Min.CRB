@@ -10,5 +10,5 @@ DataTable(Table10Min,True,4320)
 	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
 	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
 	Maximum(1,WS_mph,FP2,False,False)
-	FieldNames("WS_3_Sec_Gust_Max")
+	FieldNames("WS_3_sec_average_Max")
 EndTable

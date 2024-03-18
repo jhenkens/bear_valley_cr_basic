@@ -6,12 +6,19 @@ DataTable(MW_15M,True,2000)
 	Sample(1,TwF,FP2)
 	Sample(1,RH,FP2)
 
-	Average(1,WS_mph,FP2,False)
+	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
+	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
 	
 	Maximum(1,WS_mph,FP2,False,False)
 	FieldNames("WS_3_sec_average_Max")
 
-	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
-	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
-	Sample(1,BattV,FP2)
+	{% if enable_precip_and_snow_sensors %}
+	Sample(1,BaroV_BP,IEEE4)
+	Totalize(1,Rain_in,FP2,False)
+	FieldNames("Precip")
+	Sample(1,SR50AT_1_Snow_Depth,FP2)
+	FieldNames("IntSnow")
+	Sample(1,SR50AT_2_Snow_Depth,FP2)
+	FieldNames("TtlSnow")
+	{% endif %}
 EndTable
