@@ -1,34 +1,39 @@
-		'SR50AT Sample Code - Sensor # {{ sensor_index }}
-		'Automated snow depth measurement. Must occur two minutes before
-		'actual storage time to get 11 measurements completed.
-		If TimeIntoInterval (13,15,Min) Then
-			SR50ATCtrl_{{ sensor_index }} = True
-		EndIf
-		'Set this flag to true to get the initial distance from the SR50AT
-		'to the ground.
-		If SR50AT_MID_{{ sensor_index }} Then SR50ATCtrl_{{ sensor_index }} = True
-		'Logic to make 11 snow depth measurements, sort them, and store
-		'the corrected values.
-		If SR50ATCtrl_{{ sensor_index }} Then
-		'SR50AT Sonic Ranging Sensor (SDI-12 Output) measurements
-		'MDT, MQ, & MAir
-			SDI12Recorder(SR50AT_{{ sensor_index }}_M(),{{ sr50at_sensor_address[sensor_index-1] }},"0","M7!",1,0,-1)
-			'Load the array to be sorted.
-			SR50AT_{{ sensor_index }}(SR50AT_Counter_{{ sensor_index }},1) = SR50AT_{{ sensor_index }}_M(1)
-			SR50AT_{{ sensor_index }}(SR50AT_Counter_{{ sensor_index }},2) = SR50AT_{{ sensor_index }}_M(2)
-			SR50AT_{{ sensor_index }}(SR50AT_Counter_{{ sensor_index }},3) = SR50AT_{{ sensor_index }}_M(3)
-			SR50AT_Counter_{{ sensor_index }} += 1
-			If SR50AT_Counter_{{ sensor_index }} > 11 Then
-				SR50AT_Counter_{{ sensor_index }} = 1
-				SR50ATCtrl_{{ sensor_index }} = False
-				SortSpa (Result_SR50AT_{{ sensor_index }}(1,1),11,SR50AT_{{ sensor_index }}(1,1),2)
-				SR50AT_{{ sensor_index }}_TCDT = Result_SR50AT_{{ sensor_index }}(6,1)
-				SR50AT_{{ sensor_index }}_Q = Result_SR50AT_{{ sensor_index }}(6,2)
-				SR50AT_{{ sensor_index }}_AirTempC = Result_SR50AT_{{ sensor_index }}(6,3)
-				If SR50AT_MID_{{ sensor_index }} Then
-					SR50AT_{{ sensor_index }}_Initial_Depth = SR50AT_{{ sensor_index }}_TCDT
-					SR50AT_MID_{{ sensor_index }} = False
+		If DisableSnowDepth
+			SR50ATCtrl_{{ sensor_index }} = False
+			SR50AT_{{ sensor_index }}_Snow_Depth = 0
+		Else
+			'SR50AT Sample Code - Sensor # {{ sensor_index }}
+			'Automated snow depth measurement. Must occur two minutes before
+			'actual storage time to get 11 measurements completed.
+			If TimeIntoInterval (13,15,Min) Then
+				SR50ATCtrl_{{ sensor_index }} = True
+			EndIf
+			'Set this flag to true to get the initial distance from the SR50AT
+			'to the ground.
+			If SR50AT_MID_{{ sensor_index }} Then SR50ATCtrl_{{ sensor_index }} = True
+			'Logic to make 11 snow depth measurements, sort them, and store
+			'the corrected values.
+			If SR50ATCtrl_{{ sensor_index }} Then
+			'SR50AT Sonic Ranging Sensor (SDI-12 Output) measurements
+			'MDT, MQ, & MAir
+				SDI12Recorder(SR50AT_{{ sensor_index }}_M(),{{ sr50at_sensor_address[sensor_index-1] }},"0","M7!",1,0,-1)
+				'Load the array to be sorted.
+				SR50AT_{{ sensor_index }}(SR50AT_Counter_{{ sensor_index }},1) = SR50AT_{{ sensor_index }}_M(1)
+				SR50AT_{{ sensor_index }}(SR50AT_Counter_{{ sensor_index }},2) = SR50AT_{{ sensor_index }}_M(2)
+				SR50AT_{{ sensor_index }}(SR50AT_Counter_{{ sensor_index }},3) = SR50AT_{{ sensor_index }}_M(3)
+				SR50AT_Counter_{{ sensor_index }} += 1
+				If SR50AT_Counter_{{ sensor_index }} > 11 Then
+					SR50AT_Counter_{{ sensor_index }} = 1
+					SR50ATCtrl_{{ sensor_index }} = False
+					SortSpa (Result_SR50AT_{{ sensor_index }}(1,1),11,SR50AT_{{ sensor_index }}(1,1),2)
+					SR50AT_{{ sensor_index }}_TCDT = Result_SR50AT_{{ sensor_index }}(6,1)
+					SR50AT_{{ sensor_index }}_Q = Result_SR50AT_{{ sensor_index }}(6,2)
+					SR50AT_{{ sensor_index }}_AirTempC = Result_SR50AT_{{ sensor_index }}(6,3)
+					If SR50AT_MID_{{ sensor_index }} Then
+						SR50AT_{{ sensor_index }}_Initial_Depth = SR50AT_{{ sensor_index }}_TCDT
+						SR50AT_MID_{{ sensor_index }} = False
+					EndIf
+					SR50AT_{{ sensor_index }}_Snow_Depth = SR50AT_{{ sensor_index }}_Initial_Depth - SR50AT_{{ sensor_index }}_TCDT
 				EndIf
-				SR50AT_{{ sensor_index }}_Snow_Depth = SR50AT_{{ sensor_index }}_Initial_Depth - SR50AT_{{ sensor_index }}_TCDT
 			EndIf
 		EndIf

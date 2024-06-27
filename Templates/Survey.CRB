@@ -28,6 +28,9 @@ Dim N
 
 
 {% if enable_precip_and_snow_sensors %}
+Public Flag(1) As Boolean
+Public DisableSnowDepth As Boolean
+
 {% with sensor_index=1 %}
 {% include "Include/SR50AT_M/SR50AT_M_Vars.CRB" %}
 
@@ -109,6 +112,11 @@ BeginProg
 {% if enable_precip_and_snow_sensors %}
 SlowSequence
 	Scan(10,Sec,1,0)
+		If Flag(1) = True
+			DisableSnowDepth = True
+		Else
+			DisableSnowDepth = False
+		End If
 		{% with sensor_index=1 %}
 		{% include "Include/SR50AT_M/SR50AT_M_Sample.CRB" %}
 		{% endwith %}

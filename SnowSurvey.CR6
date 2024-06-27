@@ -27,6 +27,9 @@ Dim Bottom
 Dim N
 
 
+Public Flag(1) As Boolean
+Public DisableSnowDepth As Boolean
+
 
 'SR50AT Variable Code - Sensor # 1
 'Single measured values.
@@ -287,73 +290,88 @@ BeginProg
 	
 SlowSequence
 	Scan(10,Sec,1,0)
-		'SR50AT Sample Code - Sensor # 1
-		'Automated snow depth measurement. Must occur two minutes before
-		'actual storage time to get 11 measurements completed.
-		If TimeIntoInterval (13,15,Min) Then
-			SR50ATCtrl_1 = True
-		EndIf
-		'Set this flag to true to get the initial distance from the SR50AT
-		'to the ground.
-		If SR50AT_MID_1 Then SR50ATCtrl_1 = True
-		'Logic to make 11 snow depth measurements, sort them, and store
-		'the corrected values.
-		If SR50ATCtrl_1 Then
-		'SR50AT Sonic Ranging Sensor (SDI-12 Output) measurements
-		'MDT, MQ, & MAir
-			SDI12Recorder(SR50AT_1_M(),C1,"0","M7!",1,0,-1)
-			'Load the array to be sorted.
-			SR50AT_1(SR50AT_Counter_1,1) = SR50AT_1_M(1)
-			SR50AT_1(SR50AT_Counter_1,2) = SR50AT_1_M(2)
-			SR50AT_1(SR50AT_Counter_1,3) = SR50AT_1_M(3)
-			SR50AT_Counter_1 += 1
-			If SR50AT_Counter_1 > 11 Then
-				SR50AT_Counter_1 = 1
-				SR50ATCtrl_1 = False
-				SortSpa (Result_SR50AT_1(1,1),11,SR50AT_1(1,1),2)
-				SR50AT_1_TCDT = Result_SR50AT_1(6,1)
-				SR50AT_1_Q = Result_SR50AT_1(6,2)
-				SR50AT_1_AirTempC = Result_SR50AT_1(6,3)
-				If SR50AT_MID_1 Then
-					SR50AT_1_Initial_Depth = SR50AT_1_TCDT
-					SR50AT_MID_1 = False
+		If Flag(1) = True
+			DisableSnowDepth = True
+		Else
+			DisableSnowDepth = False
+		End If
+		If DisableSnowDepth
+			SR50ATCtrl_1 = False
+			SR50AT_1_Snow_Depth = 0
+		Else
+			'SR50AT Sample Code - Sensor # 1
+			'Automated snow depth measurement. Must occur two minutes before
+			'actual storage time to get 11 measurements completed.
+			If TimeIntoInterval (13,15,Min) Then
+				SR50ATCtrl_1 = True
+			EndIf
+			'Set this flag to true to get the initial distance from the SR50AT
+			'to the ground.
+			If SR50AT_MID_1 Then SR50ATCtrl_1 = True
+			'Logic to make 11 snow depth measurements, sort them, and store
+			'the corrected values.
+			If SR50ATCtrl_1 Then
+			'SR50AT Sonic Ranging Sensor (SDI-12 Output) measurements
+			'MDT, MQ, & MAir
+				SDI12Recorder(SR50AT_1_M(),C1,"0","M7!",1,0,-1)
+				'Load the array to be sorted.
+				SR50AT_1(SR50AT_Counter_1,1) = SR50AT_1_M(1)
+				SR50AT_1(SR50AT_Counter_1,2) = SR50AT_1_M(2)
+				SR50AT_1(SR50AT_Counter_1,3) = SR50AT_1_M(3)
+				SR50AT_Counter_1 += 1
+				If SR50AT_Counter_1 > 11 Then
+					SR50AT_Counter_1 = 1
+					SR50ATCtrl_1 = False
+					SortSpa (Result_SR50AT_1(1,1),11,SR50AT_1(1,1),2)
+					SR50AT_1_TCDT = Result_SR50AT_1(6,1)
+					SR50AT_1_Q = Result_SR50AT_1(6,2)
+					SR50AT_1_AirTempC = Result_SR50AT_1(6,3)
+					If SR50AT_MID_1 Then
+						SR50AT_1_Initial_Depth = SR50AT_1_TCDT
+						SR50AT_MID_1 = False
+					EndIf
+					SR50AT_1_Snow_Depth = SR50AT_1_Initial_Depth - SR50AT_1_TCDT
 				EndIf
-				SR50AT_1_Snow_Depth = SR50AT_1_Initial_Depth - SR50AT_1_TCDT
 			EndIf
 		EndIf
 
-		'SR50AT Sample Code - Sensor # 2
-		'Automated snow depth measurement. Must occur two minutes before
-		'actual storage time to get 11 measurements completed.
-		If TimeIntoInterval (13,15,Min) Then
-			SR50ATCtrl_2 = True
-		EndIf
-		'Set this flag to true to get the initial distance from the SR50AT
-		'to the ground.
-		If SR50AT_MID_2 Then SR50ATCtrl_2 = True
-		'Logic to make 11 snow depth measurements, sort them, and store
-		'the corrected values.
-		If SR50ATCtrl_2 Then
-		'SR50AT Sonic Ranging Sensor (SDI-12 Output) measurements
-		'MDT, MQ, & MAir
-			SDI12Recorder(SR50AT_2_M(),C3,"0","M7!",1,0,-1)
-			'Load the array to be sorted.
-			SR50AT_2(SR50AT_Counter_2,1) = SR50AT_2_M(1)
-			SR50AT_2(SR50AT_Counter_2,2) = SR50AT_2_M(2)
-			SR50AT_2(SR50AT_Counter_2,3) = SR50AT_2_M(3)
-			SR50AT_Counter_2 += 1
-			If SR50AT_Counter_2 > 11 Then
-				SR50AT_Counter_2 = 1
-				SR50ATCtrl_2 = False
-				SortSpa (Result_SR50AT_2(1,1),11,SR50AT_2(1,1),2)
-				SR50AT_2_TCDT = Result_SR50AT_2(6,1)
-				SR50AT_2_Q = Result_SR50AT_2(6,2)
-				SR50AT_2_AirTempC = Result_SR50AT_2(6,3)
-				If SR50AT_MID_2 Then
-					SR50AT_2_Initial_Depth = SR50AT_2_TCDT
-					SR50AT_MID_2 = False
+		If DisableSnowDepth
+			SR50ATCtrl_2 = False
+			SR50AT_2_Snow_Depth = 0
+		Else
+			'SR50AT Sample Code - Sensor # 2
+			'Automated snow depth measurement. Must occur two minutes before
+			'actual storage time to get 11 measurements completed.
+			If TimeIntoInterval (13,15,Min) Then
+				SR50ATCtrl_2 = True
+			EndIf
+			'Set this flag to true to get the initial distance from the SR50AT
+			'to the ground.
+			If SR50AT_MID_2 Then SR50ATCtrl_2 = True
+			'Logic to make 11 snow depth measurements, sort them, and store
+			'the corrected values.
+			If SR50ATCtrl_2 Then
+			'SR50AT Sonic Ranging Sensor (SDI-12 Output) measurements
+			'MDT, MQ, & MAir
+				SDI12Recorder(SR50AT_2_M(),C3,"0","M7!",1,0,-1)
+				'Load the array to be sorted.
+				SR50AT_2(SR50AT_Counter_2,1) = SR50AT_2_M(1)
+				SR50AT_2(SR50AT_Counter_2,2) = SR50AT_2_M(2)
+				SR50AT_2(SR50AT_Counter_2,3) = SR50AT_2_M(3)
+				SR50AT_Counter_2 += 1
+				If SR50AT_Counter_2 > 11 Then
+					SR50AT_Counter_2 = 1
+					SR50ATCtrl_2 = False
+					SortSpa (Result_SR50AT_2(1,1),11,SR50AT_2(1,1),2)
+					SR50AT_2_TCDT = Result_SR50AT_2(6,1)
+					SR50AT_2_Q = Result_SR50AT_2(6,2)
+					SR50AT_2_AirTempC = Result_SR50AT_2(6,3)
+					If SR50AT_MID_2 Then
+						SR50AT_2_Initial_Depth = SR50AT_2_TCDT
+						SR50AT_MID_2 = False
+					EndIf
+					SR50AT_2_Snow_Depth = SR50AT_2_Initial_Depth - SR50AT_2_TCDT
 				EndIf
-				SR50AT_2_Snow_Depth = SR50AT_2_Initial_Depth - SR50AT_2_TCDT
 			EndIf
 		EndIf
 	NextScan
