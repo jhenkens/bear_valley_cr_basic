@@ -76,8 +76,8 @@ BeginProg
 	{% if enable_precip_and_snow_sensors %}
 	SR50AT_Counter_1 = 1
 	SR50AT_Counter_2 = 1
-	SR50AT_1_Initial_Depth = 31
-	SR50AT_2_Initial_Depth = 234
+	SR50AT_1_Initial_Depth = 31.03
+	SR50AT_2_Initial_Depth = 237.85
 	SR50ATCtrl_1 = True
 	SR50ATCtrl_2 = True
 	{% endif %}
@@ -117,6 +117,7 @@ SlowSequence
 		Else
 			DisableSnowDepth = False
 		End If
+
 		{% with sensor_index=1 %}
 		{% include "Include/SR50AT_M/SR50AT_M_Sample.CRB" %}
 		{% endwith %}
