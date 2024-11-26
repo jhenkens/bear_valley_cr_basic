@@ -1,0 +1,69 @@
+'CR1000
+'Created by Short Cut (4.6)
+
+'Declare Variables and Units
+Public BattV
+Public PTemp_C
+Public T11_Temp_C
+Public T11_RH
+Public T11_WS_mph
+Public T11_WD_360
+Public GT_WS_mph
+Public GT_WindDir
+Public GB_Temp_C
+Public GB_RH
+
+Units BattV=Volts
+Units PTemp_C=Deg C
+Units T11_Temp_C=mV
+Units T11_RH=mV
+Units T11_WS_mph=mV
+Units T11_WD_360=mV
+Units GT_WS_mph=miles/hour
+Units GT_WindDir=degrees
+Units GB_Temp_C=mV
+Units GB_RH=mV
+
+'Define Data Tables
+DataTable(Table1,True,-1)
+	DataInterval(0,60,Min,10)
+	Sample(1,BattV,FP2)
+	Sample(1,PTemp_C,FP2)
+	Sample(1,T11_Temp_C,FP2)
+	Sample(1,T11_RH,FP2)
+	WindVector(1,T11_WS_mph,T11_WD_360,FP2,False,0,0,1)
+	FieldNames("T11_WS_mph_S_WVT,T11_WD_360_D1_WVT")
+	WindVector(1,GT_WS_mph,GT_WindDir,FP2,False,0,0,1)
+	FieldNames("GT_WS_mph_S_WVT,GT_WindDir_D1_WVT")
+	Sample(1,GB_Temp_C,FP2)
+	Sample(1,GB_RH,FP2)
+EndTable
+
+'Main Program
+BeginProg
+	'Main Scan
+	Scan(5,Sec,1,0)
+		'Default CR1000 Datalogger Battery Voltage measurement 'BattV'
+		Battery(BattV)
+		'Default CR1000 Datalogger Wiring Panel Temperature measurement 'PTemp_C'
+		PanelTemp(PTemp_C,_60Hz)
+		'Generic 4-20 mA (2-wire with datalogger power) measurement 'T11_Temp_C'
+		VoltDiff(T11_Temp_C,1,mV2500,1,True,0,_60Hz,0.0625,-75)
+		'Generic 4-20 mA (2-wire with datalogger power) measurement 'T11_RH'
+		VoltDiff(T11_RH,1,mV2500,2,True,0,_60Hz,0.0625,-25)
+		'Generic Differential Voltage measurements 'T11_WS_mph'
+		VoltDiff(T11_WS_mph,1,mV5000,7,True,0,_60Hz,0.02,0)
+		'Generic Differential Voltage measurements 'T11_WD_360'
+		VoltDiff(T11_WD_360,1,mV5000,8,True,0,_60Hz,0.072,0)
+		'05103 Wind Speed & Direction Sensor measurements 'GT_WS_mph' and 'GT_WindDir'
+		PulseCount(GT_WS_mph,1,1,1,1,0.2192,0)
+		BrHalf(GT_WindDir,1,mV2500,9,1,1,2500,True,20000,_60Hz,355,0)
+		If GT_WindDir>=355 Or GT_WindDir<0 Then GT_WindDir=0
+		'Generic 4-20 mA (2-wire with datalogger power) measurement 'GB_Temp_C'
+		VoltDiff(GB_Temp_C,1,mV2500,3,True,0,_60Hz,0.0625,-75)
+		'Generic 4-20 mA (2-wire with datalogger power) measurement 'GB_RH'
+		VoltDiff(GB_RH,1,mV2500,4,True,0,_60Hz,0.0625,-25)
+		'Call Data Tables and Store Data
+		CallTable Table1
+	NextScan
+EndProg
