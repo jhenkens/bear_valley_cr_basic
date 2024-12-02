@@ -26,8 +26,8 @@ if __name__ == "__main__":
         model_series = station["model_series"]
         def find_template(s):
             for p in [
-                INCLUDE_DIR / station["station_name"] / s,
-                INCLUDE_DIR / model_series / s,
+                INCLUDE_DIR / "Stations" / station["station_name"] / s,
+                INCLUDE_DIR / "Models" / model_series / s,
                 INCLUDE_DIR / s,
             ]:
                 if p.is_file():

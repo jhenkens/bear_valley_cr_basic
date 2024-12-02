@@ -28,9 +28,9 @@ stations:
     model_series: "CR1000"
     legacy_tables:
       - name: Table1
-        file: Include/Base/Table1.CRB
+        file: Include/Stations/Base/Table1.CRB
       - name: Table2
-        file: Include/Base/Table2.CRB
+        file: Include/Stations/Base/Table2.CRB
     sensor_cabinet_temperature:
       pin: 3
     sensor_windspeed:
@@ -43,9 +43,9 @@ stations:
     model_series: "CR1000"
     legacy_tables:
       - name: Table1
-        file: Include/KoalaTop/Table1.CRB
+        file: Include/Stations/KoalaTop/Table1.CRB
       - name: Table2
-        file: Include/KoalaTop/Table2.CRB
+        file: Include/Stations/KoalaTop/Table2.CRB
     sensor_cabinet_temperature:
       pin: 3
     sensor_air_temperature: 
@@ -63,7 +63,7 @@ stations:
     enable_precip_and_snow_sensors: true
     legacy_tables:
       - name: Table1
-        file: Include/SnowSurvey/Table1.CRB
+        file: Include/Stations/SnowSurvey/Table1.CRB
     sensor_cabinet_temperature:
       pin: U5
     sensor_windspeed:
@@ -80,11 +80,11 @@ stations:
     model_series: "CR300"
     legacy_tables:
       - name: Table1
-        file: Include/BearTop/Table1.CRB
+        file: Include/Stations/BearTop/Table1.CRB
       - name: Table2
-        file: Include/BearTop/Table2.CRB
+        file: Include/Stations/BearTop/Table2.CRB
       - name: Table3
-        file: Include/BearTop/Table3.CRB
+        file: Include/Stations/BearTop/Table3.CRB
     sensor_cabinet_temperature:
       pin: 3
     sensor_air_temperature: 
@@ -102,6 +102,7 @@ stations:
         ch_2: VX1
   - station_name: "Grizzly"
     model_series: "CR1000"
+    include_mesowest: False
     sensor_cabinet_temperature:
       disabled: True
     sensor_air_temperature:
@@ -109,6 +110,7 @@ stations:
       prefixes:
         T11_:
           windchill: True
+          interim_celsius: True
           temp_c: &grizzly_temp_c
             pin: 1
             multi: 0.0625
@@ -119,6 +121,7 @@ stations:
             offset: -25
         GB_:
           windchill: False
+          interim_celsius: True
           temp_c:
             <<: *grizzly_temp_c
             pin: 3

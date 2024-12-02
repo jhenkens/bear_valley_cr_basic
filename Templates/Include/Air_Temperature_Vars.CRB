@@ -12,4 +12,7 @@ Public {{ prefix }}RH : Units {{ prefix }}RH=%
 {% if settings["windchill"] | default(True) %}
 Public {{ prefix }}WC_F : Units {{ prefix }}WC_F=Deg F
 {% endif %}
+{% if settings["interim_celsius"] | default(False) %}
+Dim {{ prefix }}AirTC
+{% endif %}
 {% endfor %}

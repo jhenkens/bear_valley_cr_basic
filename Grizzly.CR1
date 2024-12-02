@@ -89,12 +89,14 @@ Public T11_TdF : Units T11_TdF=Deg F
 Public T11_TwF : Units T11_TwF=Deg F
 Public T11_RH : Units T11_RH=%
 Public T11_WC_F : Units T11_WC_F=Deg F
+Dim T11_AirTC
 'GB_
 'Temperature Variables (Prefix GB_)
 Public GB_AirTF : Units GB_AirTF=Deg F
 Public GB_TdF : Units GB_TdF=Deg F
 Public GB_TwF : Units GB_TwF=Deg F
 Public GB_RH : Units GB_RH=%
+Dim GB_AirTC
 
 'GT_
 'Windspeed Variables (Prefix GT_)
@@ -118,10 +120,15 @@ Dim PTemp_C
 
 DataTable(TG_15S_Wind,True,178560)
 	DataInterval(0,15,Sec,10)
-	Maximum(1,WS_mph,FP2,False,False)
-	FieldNames("WS_3_sec_average_Max")
-	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
-	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
+
+	Maximum(1,GT_WS_mph,FP2,False,False)
+	FieldNames("GT_WS_3_sec_average_Max")
+	WindVector(1,GT_WS_mph,GT_WindDir,FP2,False,0,0,1)
+	FieldNames("GT_WS_mph_S_WVT,GT_WindDir_D1_WVT")
+	Maximum(1,T11_WS_mph,FP2,False,False)
+	FieldNames("T11_WS_3_sec_average_Max")
+	WindVector(1,T11_WS_mph,T11_WindDir,FP2,False,0,0,1)
+	FieldNames("T11_WS_mph_S_WVT,T11_WindDir_D1_WVT")
 EndTable
 
 DataTable(TG_5Min_Temp,True,8640)
@@ -139,20 +146,6 @@ DataTable(TG_5Min_Temp,True,8640)
 	Sample(1,BattV,FP2)
 EndTable
 
-DataTable(MW_15M,True,2000)
-	DataInterval(0,15,Min,10)
-	Sample(1,AirTF,FP2)
-	Sample(1,TdF,FP2)
-	Sample(1,TwF,FP2)
-	Sample(1,RH,FP2)
-
-	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
-	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
-	
-	Maximum(1,WS_mph,FP2,False,False)
-	FieldNames("WS_3_sec_average_Max")
-
-EndTable
 
 DataTable(Table10Min,True,4320)
 	DataInterval(0,10,Min,10)
@@ -226,7 +219,7 @@ BeginProg
 
 		'Generic Differential Voltage measurements 'T11_WS_mph'
 		VoltDiff(T11_WS_mph,1,mV5000,7,True,0,_60Hz,0.02,0)
-		'Generic Differential Voltage measurements 'T11_WD_360'
+		'Generic Differential Voltage measurements 'T11_WindDir'
 		VoltDiff(T11_WindDir,1,mV5000,8,True,0,_60Hz,0.072,0)
 
 
@@ -234,7 +227,6 @@ BeginProg
 		'Call Data Tables and Store Data
 		CallTable TG_15S_Wind
 		CallTable TG_5Min_Temp
-		CallTable MW_15M
 		CallTable Table10Min
 		CallTable Table60Min
 		CallTable StationDaily

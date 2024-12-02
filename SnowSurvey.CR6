@@ -228,6 +228,7 @@ EndTable
 
 DataTable(TG_15S_Wind,True,178560)
 	DataInterval(0,15,Sec,10)
+
 	Maximum(1,WS_mph,FP2,False,False)
 	FieldNames("WS_3_sec_average_Max")
 	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)

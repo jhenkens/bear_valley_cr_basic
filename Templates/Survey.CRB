@@ -15,7 +15,7 @@ Const SITE_LOCATION_PRESSURE=74.11727
 'Declare Variables and Units
 {% include find_template("Air_Temperature_Vars.CRB") %}
 
-{% include find_template("Wind_Vars.CRB") %}
+{% include find_template("Windspeed_Vars.CRB") %}
 
 
 Public BattV: Units BattV=Volts
@@ -54,21 +54,23 @@ Alias BaroVUE(3)=BaroV_Qual : Units BaroV_Qual=unitless
 
 
 {% endfor %}
-{% include "Include/TG_15S_Wind.CRB" %}
+{% include "Include/Tables/TG_15S_Wind.CRB" %}
 
-{% include "Include/TG_5Min_Temp.CRB" %}
+{% include "Include/Tables/TG_5Min_Temp.CRB" %}
 
 {% if enable_precip_and_snow_sensors %}
-{% include "Include/TG_15M_Precip.CRB" %}
+{% include "Include/Tables/TG_15M_Precip.CRB" %}
 
 {% endif %}
-{% include "Include/MW_15M.CRB" %}
+{% if include_mesowest | default(True) %}
+{% include "Include/Tables/MW_15M.CRB" %}
+{% endif %}
 
-{% include "Include/Table10Min.CRB" %}
+{% include "Include/Tables/Table10Min.CRB" %}
 
-{% include "Include/Table60Min.CRB" %}
+{% include "Include/Tables/Table60Min.CRB" %}
 
-{% include "Include/StationDaily.CRB" %}
+{% include "Include/Tables/StationDaily.CRB" %}
 
 
 'Main Program
@@ -100,7 +102,9 @@ BeginProg
 		CallTable TG_15M_Precip
 
 		{% endif %}
+		{% if include_mesowest | default(True) %}
 		CallTable MW_15M
+		{% endif %}
 		CallTable Table10Min
 		CallTable Table60Min
 		CallTable StationDaily
