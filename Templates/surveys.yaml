@@ -66,6 +66,11 @@ stations:
         file: Include/Stations/SnowSurvey/Table1.CRB
     sensor_cabinet_temperature:
       pin: U5
+    sensor_air_temperature:
+      <<: *sensor_air_temperature
+      range: mV1000
+      air_tf_chan: U1
+      rh_chan: U2
     sensor_windspeed:
       <<: *sensor_windspeed
       range: mV5000
