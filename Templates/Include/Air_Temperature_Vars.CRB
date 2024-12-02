@@ -1,0 +1,15 @@
+{% for prefix, settings in (sensor_air_temperature["prefixes"] or {"":{}}).items() %}
+{% if prefix | default(False) %}
+'{{ prefix }}
+'Temperature Variables (Prefix {{ prefix }})
+{% else %}
+'Temperature Variables
+{% endif %}
+Public {{ prefix }}AirTF : Units {{ prefix }}AirTF=Deg F
+Public {{ prefix }}TdF : Units {{ prefix }}TdF=Deg F
+Public {{ prefix }}TwF : Units {{ prefix }}TwF=Deg F
+Public {{ prefix }}RH : Units {{ prefix }}RH=%
+{% if settings["windchill"] | default(True) %}
+Public {{ prefix }}WC_F : Units {{ prefix }}WC_F=Deg F
+{% endif %}
+{% endfor %}

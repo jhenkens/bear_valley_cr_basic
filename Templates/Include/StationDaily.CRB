@@ -1,13 +1,25 @@
+{% if sensor_cabinet_temperature["disabled"] != True %}
+{% set enable_cabinet_temperature = True %}
+{% else %}
+{% set enable_cabinet_temperature = False %}
+{% endif %}
 
 DataTable(StationDaily,True,30)
 	DataInterval(0,1440,Min,10)
 	Minimum(1,BattV,FP2,False,False)
 
 	Minimum(1,PTemp_C,FP2, False, False)
+	{% if enable_cabinet_temperature %}
 	Minimum(1,Temp_F,FP2, False, False)
-	Average(1,PTemp_C,FP2, False)
-	Average(1,Temp_F,FP2, False)
+	{% endif %}
 	
+	Average(1,PTemp_C,FP2, False)
+	{% if enable_cabinet_temperature %}
+	Average(1,Temp_F,FP2, False)
+	{% endif %}
+
 	Maximum(1,PTemp_C,FP2, False, False)
+	{% if enable_cabinet_temperature %}
 	Maximum(1,Temp_F,FP2, False, False)
+	{% endif %}
 EndTable

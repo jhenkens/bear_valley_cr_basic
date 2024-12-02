@@ -6,9 +6,12 @@ import pathlib
 
 CURRENT_FILE = pathlib.Path(__file__)
 BASE_DIR = CURRENT_FILE.parent
-TEMPLATES_DIR = BASE_DIR / "Templates"
+TEMPLATES_DIR: pathlib.Path = BASE_DIR / "Templates"
+INCLUDE_DIR = TEMPLATES_DIR / "Include"
 YAML_FILE = TEMPLATES_DIR / "surveys.yaml"
 TEMPLATE_FILE = TEMPLATES_DIR / "Survey.CRB"
+
+    
 
 extensions = {"CR300": "CR300", "CR1000": "CR1", "CR6": "CR6"}
 if __name__ == "__main__":
@@ -21,6 +24,15 @@ if __name__ == "__main__":
     shared_config = survey_config.get("shared", None) or {}
     for station in survey_config.get("stations", None):
         model_series = station["model_series"]
+        def find_template(s):
+            for p in [
+                INCLUDE_DIR / station["station_name"] / s,
+                INCLUDE_DIR / model_series / s,
+                INCLUDE_DIR / s,
+            ]:
+                if p.is_file():
+                    return str(p.relative_to(TEMPLATES_DIR))
+            raise FileNotFoundError(f"Template {s} not found")
 
         model_config = survey_config.get(model_series, None) or {}
         station_config = {**shared_config, **model_config, **station}
@@ -30,12 +42,18 @@ if __name__ == "__main__":
 
         dest_file_name = BASE_DIR / f"{file_name}.{extension}"
 
-        template = jinja2.Environment(
+        env = jinja2.Environment(
             loader=jinja2.FileSystemLoader(TEMPLATES_DIR),
             lstrip_blocks=True,
             trim_blocks=True,
-        ).from_string(template_file)
-        content = template.render(**station_config)
+        )
+        env.globals["find_template"] = find_template
+        template = env.from_string(template_file)
+        try:
+            content = template.render(**station_config)
+        except Exception as e:
+            print(f"Error in {file_name}")
+            raise
 
         with open(dest_file_name, "w") as dest_file:
             dest_file.write(content)

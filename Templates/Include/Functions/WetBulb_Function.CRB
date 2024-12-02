@@ -1,0 +1,48 @@
+'Calculate Wet Bulb
+Function WetBulb_Calc(AirTF, TdF, RH)
+	Dim _AirTC
+	Dim _TdC
+	Dim _SPkPa
+	Dim _Twpg
+	Dim _Twg
+	Dim _Vpg
+	Dim _Vp
+	Dim _SVp
+	Dim _Twch
+	Dim _VpgVpd
+	Dim _Top
+	Dim _Bottom
+	Dim _N
+
+	Dim _TwC
+	Dim _TwF
+
+	'Dew Point and Wet-Bulb calculation prep
+	_AirTC=(5/9)*(AirTF-32)
+	_TdC=(5/9)*(TdF-32)
+	_SPkPa=SITE_LOCATION_PRESSURE
+
+	SatVP(_SVp,_AirTC)
+	_Vp=RH*_SVp/100
+	
+	'Find Wet-Bulb 'TwC'
+	_Top=_AirTC
+	_Bottom=_TdC
+	For _N = 1 To 25
+		_Twpg=_Twg
+		_Twg=((_Top-_Bottom)/2)+_Bottom
+		WetDryBulb(_Vpg,_AirTC,_Twg,_SPkPa)
+		_VpgVpd=_Vpg-_Vp
+		_Twch=ABS(_Twpg-_Twg)
+		If _VpgVpd>0 Then
+			_Top=_Twg
+		Else
+			_Bottom=_Twg
+		EndIf
+		If _Twch<0.01 Or _N=25 Then ExitFor
+	Next
+	_TwC=_Twg
+	_TwF=1.8*_TwC+32
+	Return _TwF
+EndFunction
+

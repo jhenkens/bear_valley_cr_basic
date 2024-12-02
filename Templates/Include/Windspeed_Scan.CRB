@@ -1,0 +1,5 @@
+{% for prefix, settings in (sensor_windspeed["prefixes"] or {"": sensor_windspeed}).items() %}
+{% if settings["pulsecount"] | default(True) %}
+{% include find_template("PulseCount_Windspeed_Scan.CRB") %}
+{% endif %}
+{% endfor %}

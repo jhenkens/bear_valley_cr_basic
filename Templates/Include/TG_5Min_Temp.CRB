@@ -2,10 +2,14 @@
 DataTable(TG_5Min_Temp,True,8640)
 	DataInterval(0,5,Min,10)
 
-	Sample(1,AirTF,FP2)
-	Sample(1,WC_F,FP2)
-	Sample(1,TdF,FP2)
-	Sample(1,TwF,FP2)
-	Sample(1,RH,FP2)
+{% for prefix, settings in (sensor_air_temperature["prefixes"] or {"":{}}).items() %}
+	Sample(1,{{ prefix }}AirTF,FP2)
+{% if settings["windchill"] | default(True) %}
+	Sample(1,{{ prefix }}WC_F,FP2)
+{% endif %}
+	Sample(1,{{ prefix }}TdF,FP2)
+	Sample(1,{{ prefix }}TwF,FP2)
+	Sample(1,{{ prefix }}RH,FP2)
+{% endfor %}
 	Sample(1,BattV,FP2)
 EndTable

@@ -1,0 +1,278 @@
+'Grizzly CR1000
+'Created with Jinja2 from bear_valley_cr_basic
+
+'Constants
+Const SITE_LOCATION_PRESSURE=74.11727
+
+'Functions
+
+'Calculate Wet Bulb
+Function WetBulb_Calc(AirTF, TdF, RH)
+	Dim _AirTC
+	Dim _TdC
+	Dim _SPkPa
+	Dim _Twpg
+	Dim _Twg
+	Dim _Vpg
+	Dim _Vp
+	Dim _SVp
+	Dim _Twch
+	Dim _VpgVpd
+	Dim _Top
+	Dim _Bottom
+	Dim _N
+
+	Dim _TwC
+	Dim _TwF
+
+	'Dew Point and Wet-Bulb calculation prep
+	_AirTC=(5/9)*(AirTF-32)
+	_TdC=(5/9)*(TdF-32)
+	_SPkPa=SITE_LOCATION_PRESSURE
+
+	SatVP(_SVp,_AirTC)
+	_Vp=RH*_SVp/100
+	
+	'Find Wet-Bulb 'TwC'
+	_Top=_AirTC
+	_Bottom=_TdC
+	For _N = 1 To 25
+		_Twpg=_Twg
+		_Twg=((_Top-_Bottom)/2)+_Bottom
+		WetDryBulb(_Vpg,_AirTC,_Twg,_SPkPa)
+		_VpgVpd=_Vpg-_Vp
+		_Twch=ABS(_Twpg-_Twg)
+		If _VpgVpd>0 Then
+			_Top=_Twg
+		Else
+			_Bottom=_Twg
+		EndIf
+		If _Twch<0.01 Or _N=25 Then ExitFor
+	Next
+	_TwC=_Twg
+	_TwF=1.8*_TwC+32
+	Return _TwF
+EndFunction
+
+'Calculate Dew Point
+Function DewPoint_Calc(AirTF, RH)
+	Dim _TdC
+	Dim _TdF
+	Dim _AirTC
+
+
+	_AirTC=(5/9)*(AirTF-32)
+	'Dew Point calculation 'TdF'
+	DewPoint(_TdC,_AirTC,RH)
+	If _TdC>_AirTC Or _TdC=NAN Then _TdC=_AirTC
+	_TdF=1.8*_TdC+32
+	Return _TdF
+EndFunction
+
+'Calculate Wind Chill
+Function WindChill_Calc(AirTF, WS_mph)
+	Dim _Wc_F
+
+	'Wind Chill calculation '_Wc_F'
+	_Wc_F=35.74+0.6215*AirTF-35.75*WS_mph^0.16+0.4275*AirTF*WS_mph^0.16
+	If _Wc_F>AirTF Or _Wc_F=NAN Then _Wc_F=AirTF
+	If AirTF>50 OR WS_mph<3 Then _Wc_F=AirTF
+
+	Return _Wc_F
+EndFunction
+
+'Declare Variables and Units
+'T11_
+'Temperature Variables (Prefix T11_)
+Public T11_AirTF : Units T11_AirTF=Deg F
+Public T11_TdF : Units T11_TdF=Deg F
+Public T11_TwF : Units T11_TwF=Deg F
+Public T11_RH : Units T11_RH=%
+Public T11_WC_F : Units T11_WC_F=Deg F
+'GB_
+'Temperature Variables (Prefix GB_)
+Public GB_AirTF : Units GB_AirTF=Deg F
+Public GB_TdF : Units GB_TdF=Deg F
+Public GB_TwF : Units GB_TwF=Deg F
+Public GB_RH : Units GB_RH=%
+
+'GT_
+'Windspeed Variables (Prefix GT_)
+Public GT_WS_mph : Units GT_WS_mph=miles/hour
+Public GT_WindDir : Units GT_WindDir=degrees
+'T11_
+'Windspeed Variables (Prefix T11_)
+Public T11_WS_mph : Units T11_WS_mph=miles/hour
+Public T11_WindDir : Units T11_WindDir=degrees
+
+
+Public BattV: Units BattV=Volts
+
+Dim PTemp_C
+
+
+
+
+
+'Define Data Tables
+
+DataTable(TG_15S_Wind,True,178560)
+	DataInterval(0,15,Sec,10)
+	Maximum(1,WS_mph,FP2,False,False)
+	FieldNames("WS_3_sec_average_Max")
+	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
+	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
+EndTable
+
+DataTable(TG_5Min_Temp,True,8640)
+	DataInterval(0,5,Min,10)
+
+	Sample(1,T11_AirTF,FP2)
+	Sample(1,T11_WC_F,FP2)
+	Sample(1,T11_TdF,FP2)
+	Sample(1,T11_TwF,FP2)
+	Sample(1,T11_RH,FP2)
+	Sample(1,GB_AirTF,FP2)
+	Sample(1,GB_TdF,FP2)
+	Sample(1,GB_TwF,FP2)
+	Sample(1,GB_RH,FP2)
+	Sample(1,BattV,FP2)
+EndTable
+
+DataTable(MW_15M,True,2000)
+	DataInterval(0,15,Min,10)
+	Sample(1,AirTF,FP2)
+	Sample(1,TdF,FP2)
+	Sample(1,TwF,FP2)
+	Sample(1,RH,FP2)
+
+	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
+	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
+	
+	Maximum(1,WS_mph,FP2,False,False)
+	FieldNames("WS_3_sec_average_Max")
+
+EndTable
+
+DataTable(Table10Min,True,4320)
+	DataInterval(0,10,Min,10)
+	Minimum(1,BattV,FP2,False,False)
+	Sample(1,T11_AirTF,FP2)
+	Sample(1,T11_RH,FP2)
+	Sample(1,T11_WC_F,FP2)
+	Sample(1,T11_TdF,FP2)
+	Sample(1,T11_TwF,FP2)
+	Sample(1,GB_AirTF,FP2)
+	Sample(1,GB_RH,FP2)
+	Sample(1,GB_TdF,FP2)
+	Sample(1,GB_TwF,FP2)
+
+	WindVector(1,GT_WS_mph,GT_WindDir,FP2,False,0,0,1)
+	FieldNames("GT_WS_mph_S_WVT,GT_WindDir_D1_WVT")
+	Maximum(1,GT_WS_mph,FP2,False,False)
+	FieldNames("GT_WS_3_sec_average_Max")
+	WindVector(1,T11_WS_mph,T11_WindDir,FP2,False,0,0,1)
+	FieldNames("T11_WS_mph_S_WVT,T11_WindDir_D1_WVT")
+	Maximum(1,T11_WS_mph,FP2,False,False)
+	FieldNames("T11_WS_3_sec_average_Max")
+EndTable
+
+DataTable(Table60Min,True,720)
+	DataInterval(0,60,Min,10)
+	Sample(1,BattV,FP2)
+
+	Sample(1,T11_AirTF,FP2)
+	Sample(1,T11_RH,FP2)
+	Sample(1,T11_WC_F,FP2)
+	Sample(1,T11_TdF,FP2)
+	Sample(1,T11_TwF,FP2)
+	Sample(1,GB_AirTF,FP2)
+	Sample(1,GB_RH,FP2)
+	Sample(1,GB_TdF,FP2)
+	Sample(1,GB_TwF,FP2)
+
+	WindVector(1,GT_WS_mph,GT_WindDir,FP2,False,0,0,1)
+	FieldNames("GT_WS_mph_S_WVT,GT_WindDir_D1_WVT")
+	Maximum(1,GT_WS_mph,FP2,False,False)
+	FieldNames("GT_WS_3_sec_average_Max")
+	WindVector(1,T11_WS_mph,T11_WindDir,FP2,False,0,0,1)
+	FieldNames("T11_WS_mph_S_WVT,T11_WindDir_D1_WVT")
+	Maximum(1,T11_WS_mph,FP2,False,False)
+	FieldNames("T11_WS_3_sec_average_Max")
+
+
+EndTable
+
+DataTable(StationDaily,True,30)
+	DataInterval(0,1440,Min,10)
+	Minimum(1,BattV,FP2,False,False)
+
+	Minimum(1,PTemp_C,FP2, False, False)
+	
+	Average(1,PTemp_C,FP2, False)
+
+	Maximum(1,PTemp_C,FP2, False, False)
+EndTable
+
+'Main Program
+BeginProg
+	'Main Scan
+	Scan(3,Sec,1,0)
+
+		'05103 Wind Speed & Direction Sensor measurements 'GT_WS_mph' and 'GT_WindDir'
+		PulseCount(GT_WS_mph,1,1,1,1,0.2192,0)
+		BrHalf(GT_WindDir,1,mV2500,9,1,1,2500,True,20000,_60Hz,355,0)
+		If GT_WindDir>=355 Or GT_WindDir<0 Then GT_WindDir=0
+
+		'Generic Differential Voltage measurements 'T11_WS_mph'
+		VoltDiff(T11_WS_mph,1,mV5000,7,True,0,_60Hz,0.02,0)
+		'Generic Differential Voltage measurements 'T11_WD_360'
+		VoltDiff(T11_WindDir,1,mV5000,8,True,0,_60Hz,0.072,0)
+
+
+
+		'Call Data Tables and Store Data
+		CallTable TG_15S_Wind
+		CallTable TG_5Min_Temp
+		CallTable MW_15M
+		CallTable Table10Min
+		CallTable Table60Min
+		CallTable StationDaily
+	NextScan
+
+	
+
+
+SlowSequence
+	'Non-Wind Scan
+	Scan(60,Sec,1,0)
+		'Default CR1000 Datalogger Battery Voltage measurement 'BattV'
+		Battery(BattV)
+		'Default CR1000 Datalogger Wiring Panel Temperature measurement 'PTemp_C'
+		PanelTemp(PTemp_C,_60Hz)
+		
+
+
+		'T11_
+		'Generic 4-20 mA (2-wire with datalogger power) measurement 'T11_Temp_C'
+		VoltDiff(T11_AirTC,1,mV2500,1,True,0,_60Hz,0.0625,-75)
+		T11_AirTF = 1.8*T11_AirTC + 32
+		'Generic 4-20 mA (2-wire with datalogger power) measurement 'T11_RH'
+		VoltDiff(T11_RH,1,mV2500,2,True,0,_60Hz,0.0625,-25)
+
+		T11_TdF = DewPoint_Calc(T11_AirTF, T11_RH)
+		T11_TwF = WetBulb_Calc(T11_AirTF, T11_TdF, T11_RH)
+
+		'GB_
+		'Generic 4-20 mA (2-wire with datalogger power) measurement 'GB_Temp_C'
+		VoltDiff(GB_AirTC,1,mV2500,3,True,0,_60Hz,0.0625,-75)
+		GB_AirTF = 1.8*GB_AirTC + 32
+		'Generic 4-20 mA (2-wire with datalogger power) measurement 'GB_RH'
+		VoltDiff(GB_RH,1,mV2500,4,True,0,_60Hz,0.0625,-25)
+
+		GB_TdF = DewPoint_Calc(GB_AirTF, GB_RH)
+		GB_TwF = WetBulb_Calc(GB_AirTF, GB_TdF, GB_RH)
+
+
+	NextScan
+EndProg

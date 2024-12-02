@@ -1,9 +1,0 @@
-
-		'EE181 (panel switched power) Temperature & Relative Humidity Sensor measurements 'AirTF' and 'RH'
-		SW12(1)
-		Delay(0,2,Sec)
-		VoltSE(AirTF,1,mV2500,2,False,0,60,0.18,-40)
-		VoltSE(RH,1,mV2500,3,False,0,60,0.1,0)
-		SW12(0)
-		'Type T Thermocouple measurements 'Temp_F'
-		TCDiff(Temp_F,1,mv34,3,TypeT,PTemp_C,True,0,60,1.8,32)

@@ -1,0 +1,5 @@
+{% set range = settings["range"] | default(panel_default_range) %}
+		'Generic Differential Voltage measurements '{{ prefix }}WS_mph'
+		VoltDiff({{ prefix }}WS_mph,1,{{ range }},{{ settings["mph"]["ch"] }},True,0,{{ panel_frequency_filter }},0.02,0)
+		'Generic Differential Voltage measurements '{{ prefix }}WindDir'
+		VoltDiff({{ prefix }}WindDir,1,{{ range }},{{ settings["dir"]["ch"] }},True,0,{{ panel_frequency_filter }},0.072,0)

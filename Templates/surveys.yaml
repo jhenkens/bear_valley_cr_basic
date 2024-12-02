@@ -2,10 +2,25 @@ shared:
   main_scan_interval_count: 3
   main_scan_interval_unit: Sec
   panel_frequency_filter: 60
+  panel_default_range: mV2500
   legacy_tables: []
   sr50at_sensor_address:
     - C1
     - C3
+  sensor_air_temperature: &sensor_air_temperature
+    range: mV2500
+    air_tf_chan: 1
+    rh_chan: 2
+  sensor_windspeed: &sensor_windspeed
+    model: "05103"
+    mph: &05103_mph
+      ch: CH
+      mult: 0.2192
+      offset: 0
+    dir:
+      ch_1: 3
+      ch_2: 1
+
 CR1000:
   panel_frequency_filter: _60Hz
 stations:
@@ -16,6 +31,14 @@ stations:
         file: Include/Base/Table1.CRB
       - name: Table2
         file: Include/Base/Table2.CRB
+    sensor_cabinet_temperature:
+      pin: 3
+    sensor_windspeed:
+      <<: *sensor_windspeed
+      model: "05103"
+      mph:
+        <<: *05103_mph
+        ch: 1
   - station_name: "KoalaTop"
     model_series: "CR1000"
     legacy_tables:
@@ -23,12 +46,36 @@ stations:
         file: Include/KoalaTop/Table1.CRB
       - name: Table2
         file: Include/KoalaTop/Table2.CRB
+    sensor_cabinet_temperature:
+      pin: 3
+    sensor_air_temperature: 
+      <<: *sensor_air_temperature
+      switched_power: True
+    sensor_windspeed: &koalatop_windspeed
+      <<: *sensor_windspeed
+      model: "05108-45"
+      mph: &05108-45_mph
+        mult: 0.3726
+        offset: 0
+        ch: 1
   - station_name: "SnowSurvey"
     model_series: "CR6"
     enable_precip_and_snow_sensors: true
     legacy_tables:
       - name: Table1
         file: Include/SnowSurvey/Table1.CRB
+    sensor_cabinet_temperature:
+      pin: U5
+    sensor_windspeed:
+      <<: *sensor_windspeed
+      range: mV5000
+      mph:
+        <<: *05103_mph
+        ch: U10
+      dir:
+        ch_1: U8
+        ch_2: U7
+
   - station_name: "BearTop"
     model_series: "CR300"
     legacy_tables:
@@ -38,3 +85,65 @@ stations:
         file: Include/BearTop/Table2.CRB
       - name: Table3
         file: Include/BearTop/Table3.CRB
+    sensor_cabinet_temperature:
+      pin: 3
+    sensor_air_temperature: 
+      <<: *sensor_air_temperature
+      switched_power: True
+      air_tf_chan: 2
+      rh_chan: 3
+    sensor_windspeed:
+      <<: *koalatop_windspeed
+      mph:
+        <<: *05108-45_mph
+        ch: P_LL
+      dir:
+        ch_1: 1
+        ch_2: VX1
+  - station_name: "Grizzly"
+    model_series: "CR1000"
+    sensor_cabinet_temperature:
+      disabled: True
+    sensor_air_temperature:
+      range: mV2500
+      prefixes:
+        T11_:
+          windchill: True
+          temp_c: &grizzly_temp_c
+            pin: 1
+            multi: 0.0625
+            offset: -75
+          rh: &grizzly_rh
+            pin: 2
+            multi: 0.0625
+            offset: -25
+        GB_:
+          windchill: False
+          temp_c:
+            <<: *grizzly_temp_c
+            pin: 3
+          rh: 
+            <<: *grizzly_rh
+            pin: 4
+    sensor_windspeed:
+      prefixes:
+        GT_:
+          <<: *sensor_windspeed
+          pulsecount: True
+          mph:
+            <<: *05103_mph
+            ch: 1
+          dir:
+            ch_1: 9
+            ch_2: 1
+        T11_:
+          voltdiff: True
+          range: mV5000
+          mph:
+            ch: 7
+            mult: 0.02
+            offset: 0
+          dir:
+            ch: 8
+            mult: 0.072
+            offset: 0

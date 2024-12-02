@@ -1,0 +1,10 @@
+{% for prefix, settings in (sensor_windspeed["prefixes"] or {"":{}}).items() %}
+{% if prefix | default(False) %}
+'{{ prefix }}
+'Windspeed Variables (Prefix {{ prefix }})
+{% else %}
+'Windspeed Variables
+{% endif %}
+Public {{ prefix }}WS_mph : Units {{ prefix }}WS_mph=miles/hour
+Public {{ prefix }}WindDir : Units {{ prefix }}WindDir=degrees
+{% endfor %}

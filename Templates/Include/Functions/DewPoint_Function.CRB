@@ -1,0 +1,15 @@
+'Calculate Dew Point
+Function DewPoint_Calc(AirTF, RH)
+	Dim _TdC
+	Dim _TdF
+	Dim _AirTC
+
+
+	_AirTC=(5/9)*(AirTF-32)
+	'Dew Point calculation 'TdF'
+	DewPoint(_TdC,_AirTC,RH)
+	If _TdC>_AirTC Or _TdC=NAN Then _TdC=_AirTC
+	_TdF=1.8*_TdC+32
+	Return _TdF
+EndFunction
+

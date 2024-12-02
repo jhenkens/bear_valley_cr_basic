@@ -1,0 +1,35 @@
+{% set range = sensor_air_temperature["range"] | default(panel_default_range) %}
+{% if "switched_power" in sensor_air_temperature and sensor_air_temperature["switched_power"] %}
+{% set switched_power = True %}
+{% set power_desc = "panel switched power" %}
+{% else %}
+{% set switched_power = False %}
+{% set power_desc = "constant power" %}
+{% endif %}
+		'EE181 ({{ power_desc }}) Temperature & Relative Humidity Sensor measurements 'AirTF' and 'RH'
+{% if switched_power %}
+{% if model_series == "CR300" %}
+		SW12(1)
+{% else %}
+		PortSet(9,1)
+{% endif %}
+		Delay(0,2,Sec)
+{% endif %}
+		VoltSE(AirTF,1,{{ range }},{{ sensor_air_temperature["air_tf_chan"] }},False,0,{{ panel_frequency_filter }},0.18,-40)
+		VoltSE(RH,1,{{ range }},{{ sensor_air_temperature["rh_chan"] }},False,0,{{ panel_frequency_filter }},0.1,0)
+		If RH>100 AND RH<108 Then RH=100
+
+{% if switched_power %}
+{% if model_series == "CR300" %}
+		SW12(0)
+{% else %}
+		PortSet(9,0)
+{% endif %}
+{% endif %}
+		TdF = DewPoint_Calc(AirTF, RH)
+		TwF = WetBulb_Calc(AirTF, TdF, RH)
+
+{% if sensor_air_temperature["windchill"] | default(True) %}
+		WC_F = WindChill_Calc(AirTF, WS_mph)
+{% endif %}
+

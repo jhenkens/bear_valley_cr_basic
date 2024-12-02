@@ -1,0 +1,7 @@
+{% set range = settings["range"] | default(panel_default_range) %}
+{% set revex = "False" if model_series == "CR300" else "True" %}
+{% set pconfig = "5" if model_series == "CR6" else "1" %}
+		'{{ settings["model"] }} Wind Speed & Direction Sensor measurements '{{ prefix }}WS_mph' and '{{ prefix }}WindDir'
+		PulseCount({{ prefix }}WS_mph,1,{{ settings["mph"]["ch"] }},{{ pconfig }},1,{{ settings["mph"]["mult"] }},{{ settings["mph"]["offset"] }})
+		BrHalf({{ prefix }}WindDir,1,{{ range }},{{ settings["dir"]["ch_1"] }},{{ settings["dir"]["ch_2"] }},1,2500,{{ revex }},20000,{{ panel_frequency_filter }},355,0)
+		If {{ prefix }}WindDir>=355 Or {{ prefix }}WindDir<0 Then {{ prefix }}WindDir=0

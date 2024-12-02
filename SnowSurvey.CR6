@@ -1,30 +1,104 @@
 'SnowSurvey CR6
 'Created with Jinja2 from bear_valley_cr_basic
 
+'Constants
+Const SITE_LOCATION_PRESSURE=74.11727
+
+'Functions
+
+'Calculate Wet Bulb
+Function WetBulb_Calc(AirTF, TdF, RH)
+	Dim _AirTC
+	Dim _TdC
+	Dim _SPkPa
+	Dim _Twpg
+	Dim _Twg
+	Dim _Vpg
+	Dim _Vp
+	Dim _SVp
+	Dim _Twch
+	Dim _VpgVpd
+	Dim _Top
+	Dim _Bottom
+	Dim _N
+
+	Dim _TwC
+	Dim _TwF
+
+	'Dew Point and Wet-Bulb calculation prep
+	_AirTC=(5/9)*(AirTF-32)
+	_TdC=(5/9)*(TdF-32)
+	_SPkPa=SITE_LOCATION_PRESSURE
+
+	SatVP(_SVp,_AirTC)
+	_Vp=RH*_SVp/100
+	
+	'Find Wet-Bulb 'TwC'
+	_Top=_AirTC
+	_Bottom=_TdC
+	For _N = 1 To 25
+		_Twpg=_Twg
+		_Twg=((_Top-_Bottom)/2)+_Bottom
+		WetDryBulb(_Vpg,_AirTC,_Twg,_SPkPa)
+		_VpgVpd=_Vpg-_Vp
+		_Twch=ABS(_Twpg-_Twg)
+		If _VpgVpd>0 Then
+			_Top=_Twg
+		Else
+			_Bottom=_Twg
+		EndIf
+		If _Twch<0.01 Or _N=25 Then ExitFor
+	Next
+	_TwC=_Twg
+	_TwF=1.8*_TwC+32
+	Return _TwF
+EndFunction
+
+'Calculate Dew Point
+Function DewPoint_Calc(AirTF, RH)
+	Dim _TdC
+	Dim _TdF
+	Dim _AirTC
+
+
+	_AirTC=(5/9)*(AirTF-32)
+	'Dew Point calculation 'TdF'
+	DewPoint(_TdC,_AirTC,RH)
+	If _TdC>_AirTC Or _TdC=NAN Then _TdC=_AirTC
+	_TdF=1.8*_TdC+32
+	Return _TdF
+EndFunction
+
+'Calculate Wind Chill
+Function WindChill_Calc(AirTF, WS_mph)
+	Dim _Wc_F
+
+	'Wind Chill calculation '_Wc_F'
+	_Wc_F=35.74+0.6215*AirTF-35.75*WS_mph^0.16+0.4275*AirTF*WS_mph^0.16
+	If _Wc_F>AirTF Or _Wc_F=NAN Then _Wc_F=AirTF
+	If AirTF>50 OR WS_mph<3 Then _Wc_F=AirTF
+
+	Return _Wc_F
+EndFunction
+
 'Declare Variables and Units
+'Temperature Variables
 Public AirTF : Units AirTF=Deg F
 Public TdF : Units TdF=Deg F
 Public TwF : Units TwF=Deg F
 Public RH : Units RH=%
+Public WC_F : Units WC_F=Deg F
+
+'Windspeed Variables
 Public WS_mph : Units WS_mph=miles/hour
 Public WindDir : Units WindDir=degrees
-Public WC_F : Units WC_F=Deg F
+
+
 Public BattV: Units BattV=Volts
 
-Dim Temp_F
 Dim PTemp_C
-Dim AirTC
-Dim SPkPa
-Dim Twg
-Dim Twpg
-Dim Vpg
-Dim Vp
-Dim SVp
-Dim Twch
-Dim VpgVpd
-Dim Top
-Dim Bottom
-Dim N
+
+Dim Temp_F
 
 
 Public Flag(1) As Boolean
@@ -215,6 +289,7 @@ DataTable(Table10Min,True,4320)
 	Sample(1,WC_F,FP2)
 	Sample(1,TdF,FP2)
 	Sample(1,TwF,FP2)
+
 	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
 	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
 	Maximum(1,WS_mph,FP2,False,False)
@@ -224,11 +299,13 @@ EndTable
 DataTable(Table60Min,True,720)
 	DataInterval(0,60,Min,10)
 	Sample(1,BattV,FP2)
+
 	Sample(1,AirTF,FP2)
 	Sample(1,RH,FP2)
 	Sample(1,WC_F,FP2)
 	Sample(1,TdF,FP2)
 	Sample(1,TwF,FP2)
+
 	WindVector(1,WS_mph,WindDir,FP2,False,0,0,1)
 	FieldNames("WS_mph_S_WVT,WindDir_D1_WVT")
 	Maximum(1,WS_mph,FP2,False,False)
@@ -249,9 +326,10 @@ DataTable(StationDaily,True,30)
 
 	Minimum(1,PTemp_C,FP2, False, False)
 	Minimum(1,Temp_F,FP2, False, False)
+	
 	Average(1,PTemp_C,FP2, False)
 	Average(1,Temp_F,FP2, False)
-	
+
 	Maximum(1,PTemp_C,FP2, False, False)
 	Maximum(1,Temp_F,FP2, False, False)
 EndTable
@@ -266,12 +344,10 @@ BeginProg
 	SR50ATCtrl_2 = True
 	'Main Scan
 	Scan(3,Sec,1,0)
-
 		'05103 Wind Speed & Direction Sensor measurements 'WS_mph' and 'WindDir'
 		PulseCount(WS_mph,1,U10,5,1,0.2192,0)
 		BrHalf(WindDir,1,mV5000,U8,U7,1,2500,True,20000,60,355,0)
 		If WindDir>=355 Or WindDir<0 Then WindDir=0
-
 		'Generic Tipping Bucket Rain Gauge measurement 'Rain_in'
 		PulseCount(Rain_in,1,U3,1,0,0.01,0)
 
@@ -386,13 +462,18 @@ SlowSequence
 		'Default CR6 Datalogger Wiring Panel Temperature measurement 'PTemp_C'
 		PanelTemp(PTemp_C,60)
 		
-
-		'EE181 (constant power) Temperature & Relative Humidity Sensor measurements 'AirTF' and 'RH'
-		VoltSE(AirTF,1,mV1000,U1,False,0,60,0.18,-40)
-		VoltSE(RH,1,mV1000,U2,False,0,60,0.1,0)
 		'Type T Thermocouple measurements 'Temp_F'
 		TCDiff(Temp_F,1,mv200C,U5,TypeT,PTemp_C,True,0,60,1.8,32)
+
+		'EE181 (constant power) Temperature & Relative Humidity Sensor measurements 'AirTF' and 'RH'
+		VoltSE(AirTF,1,mV2500,1,False,0,60,0.18,-40)
+		VoltSE(RH,1,mV2500,2,False,0,60,0.1,0)
 		If RH>100 AND RH<108 Then RH=100
+
+		TdF = DewPoint_Calc(AirTF, RH)
+		TwF = WetBulb_Calc(AirTF, TdF, RH)
+
+		WC_F = WindChill_Calc(AirTF, WS_mph)
 
 		'BaroVUE10 (SDI-12) Barometric Pressure Sensor measurements 'BaroV_BP', 'BaroV_Temp', and 'BaroV_Qual'
 		SDI12Recorder(BaroVUE(),U11,"3","M!",1,0,-1)
@@ -402,39 +483,5 @@ SlowSequence
 		BaroV_BP=BaroV_BP*0.02953
 		'Convert BaroVUE10 (SDI-12) Barometric Pressure Sensor measurement 'BaroV_Temp' from deg C to deg F
 		BaroV_Temp=BaroV_Temp*1.8+32
-
-		'Dew Point and Wet-Bulb calculation prep
-		AirTC=(5/9)*(AirTF-32)
-		SPkPa=74.11727
-		SatVP(SVp,AirTC)
-		Vp=RH*SVp/100
-		'Dew Point calculation 'TdF'
-		DewPoint(TdF,AirTC,RH)
-		If TdF>AirTC Or TdF=NAN Then TdF=AirTC
-		'Find Wet-Bulb 'TwF'
-		Top=AirTC
-		Bottom=TdF
-		For N = 1 To 25
-			Twpg=Twg
-			Twg=((Top-Bottom)/2)+Bottom
-			WetDryBulb(Vpg,AirTC,Twg,SPkPa)
-			VpgVpd=Vpg-Vp
-			Twch=ABS(Twpg-Twg)
-			If VpgVpd>0 Then
-				Top=Twg
-			Else
-				Bottom=Twg
-			EndIf
-			If Twch<0.01 Or N=25 Then ExitFor
-		Next
-		TwF=Twg
-		TdF=1.8*TdF+32
-		TwF=1.8*TwF+32
-
-
-		'Wind Chill calculation 'WC_F'
-		WC_F=35.74+0.6215*AirTF-35.75*WS_mph^0.16+0.4275*AirTF*WS_mph^0.16
-		If WC_F>AirTF Or WC_F=NAN Then WC_F=AirTF
-		If AirTF>50 OR WS_mph<3 Then WC_F=AirTF
 	NextScan
 EndProg

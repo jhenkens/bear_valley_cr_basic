@@ -1,0 +1,11 @@
+{% if sensor_cabinet_temperature["disabled"] != True %}
+{%- if model_series == "CR1000" -%}
+	{%- set range = "mV2_5C" -%}
+{%- elif model_series == "CR6" -%}
+	{%- set range = "mv200C" -%}
+{%- elif model_series == "CR300" -%}
+	{%- set range = "mv34" -%}
+{%- endif %}
+		'Type T Thermocouple measurements 'Temp_F'
+		TCDiff(Temp_F,1,{{ range }},{{ sensor_cabinet_temperature["pin"]}},TypeT,PTemp_C,True,0,{{ panel_frequency_filter }},1.8,32)
+{% endif %}

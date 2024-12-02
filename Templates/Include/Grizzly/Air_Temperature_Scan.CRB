@@ -1,0 +1,13 @@
+{% set range = sensor_air_temperature["range"] %}
+{% for prefix, settings in sensor_air_temperature["prefixes"].items() %}
+
+		'{{ prefix }}
+		'Generic 4-20 mA (2-wire with datalogger power) measurement '{{ prefix }}Temp_C'
+		VoltDiff({{ prefix }}AirTC,1,{{ range }},{{ settings["temp_c"]["pin"] }},True,0,{{ panel_frequency_filter }},{{ settings["temp_c"]["multi"] }},{{ settings["temp_c"]["offset"] }})
+		{{ prefix }}AirTF = 1.8*{{ prefix }}AirTC + 32
+		'Generic 4-20 mA (2-wire with datalogger power) measurement '{{ prefix }}RH'
+		VoltDiff({{ prefix }}RH,1,{{ range }},{{ settings["rh"]["pin"] }},True,0,{{ panel_frequency_filter }},{{ settings["rh"]["multi"] }},{{ settings["rh"]["offset"] }})
+
+		{{ prefix }}TdF = DewPoint_Calc({{ prefix }}AirTF, {{ prefix }}RH)
+		{{ prefix }}TwF = WetBulb_Calc({{ prefix }}AirTF, {{ prefix }}TdF, {{ prefix }}RH)
+{% endfor %}

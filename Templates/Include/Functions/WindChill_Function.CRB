@@ -1,0 +1,12 @@
+'Calculate Wind Chill
+Function WindChill_Calc(AirTF, WS_mph)
+	Dim _Wc_F
+
+	'Wind Chill calculation '_Wc_F'
+	_Wc_F=35.74+0.6215*AirTF-35.75*WS_mph^0.16+0.4275*AirTF*WS_mph^0.16
+	If _Wc_F>AirTF Or _Wc_F=NAN Then _Wc_F=AirTF
+	If AirTF>50 OR WS_mph<3 Then _Wc_F=AirTF
+
+	Return _Wc_F
+EndFunction
+

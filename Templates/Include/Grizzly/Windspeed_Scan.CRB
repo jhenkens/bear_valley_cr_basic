@@ -1,0 +1,11 @@
+
+{% for prefix, settings in sensor_windspeed["prefixes"].items() %}
+{% if settings["pulsecount"] %}
+{% include find_template("PulseCount_Windspeed_Scan.CRB") %}
+{% endif %}
+{% if settings["voltdiff"] %}
+{% include find_template("VoltDiff_Windspeed_Scan.CRB") %}
+{% endif %}
+
+
+{% endfor %}
