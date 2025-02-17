@@ -255,6 +255,8 @@ SlowSequence
 		T11_TdF = DewPoint_Calc(T11_AirTF, T11_RH)
 		T11_TwF = WetBulb_Calc(T11_AirTF, T11_TdF, T11_RH)
 
+		T11_WC_F = WindChill_Calc(T11_AirTF, T11_WS_mph)
+
 		'GB_
 		'Generic 4-20 mA (2-wire with datalogger power) measurement 'GB_Temp_C'
 		VoltDiff(GB_AirTC,1,mV2500,3,True,0,_60Hz,0.0625,-75)
@@ -264,6 +266,7 @@ SlowSequence
 
 		GB_TdF = DewPoint_Calc(GB_AirTF, GB_RH)
 		GB_TwF = WetBulb_Calc(GB_AirTF, GB_TdF, GB_RH)
+
 
 
 	NextScan

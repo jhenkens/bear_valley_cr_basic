@@ -10,4 +10,8 @@
 
 		{{ prefix }}TdF = DewPoint_Calc({{ prefix }}AirTF, {{ prefix }}RH)
 		{{ prefix }}TwF = WetBulb_Calc({{ prefix }}AirTF, {{ prefix }}TdF, {{ prefix }}RH)
+
+{% if settings["windchill"] | default(True) %}
+		{{ prefix }}WC_F = WindChill_Calc({{ prefix }}AirTF, {{ prefix }}WS_mph)
+{% endif %}
 {% endfor %}
