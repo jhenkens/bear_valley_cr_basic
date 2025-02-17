@@ -14,15 +14,15 @@ Public GB_Temp_C
 Public GB_RH
 
 Units BattV=Volts
-Units PTemp_C=Deg C
-Units T11_Temp_C=mV
-Units T11_RH=mV
-Units T11_WS_mph=mV
-Units T11_WD_360=mV
+Units PTemp_C=Deg_C
+Units T11_Temp_C=Deg_C
+Units T11_RH=RH
+Units T11_WS_mph=V
+Units T11_WD_360=V
 Units GT_WS_mph=miles/hour
 Units GT_WindDir=degrees
-Units GB_Temp_C=mV
-Units GB_RH=mV
+Units GB_Temp_C=Deg_C
+Units GB_RH=RH
 
 'Define Data Tables
 DataTable(Table1,True,-1)
@@ -57,8 +57,8 @@ BeginProg
 		VoltDiff(T11_WD_360,1,mV5000,8,True,0,_60Hz,0.072,0)
 		'05103 Wind Speed & Direction Sensor measurements 'GT_WS_mph' and 'GT_WindDir'
 		PulseCount(GT_WS_mph,1,1,1,1,0.2192,0)
-		BrHalf(GT_WindDir,1,mV2500,9,1,1,2500,True,20000,_60Hz,355,0)
-		If GT_WindDir>=355 Or GT_WindDir<0 Then GT_WindDir=0
+		BrHalf(GT_WindDir,1,mV2500,9,2,1,2500,True,20000,_60Hz,355,0)
+		If GT_WindDir>=355 OR GT_WindDir<0 Then GT_WindDir=0
 		'Generic 4-20 mA (2-wire with datalogger power) measurement 'GB_Temp_C'
 		VoltDiff(GB_Temp_C,1,mV2500,3,True,0,_60Hz,0.0625,-75)
 		'Generic 4-20 mA (2-wire with datalogger power) measurement 'GB_RH'
@@ -67,3 +67,4 @@ BeginProg
 		CallTable Table1
 	NextScan
 EndProg
+  .        

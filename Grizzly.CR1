@@ -214,7 +214,7 @@ BeginProg
 
 		'05103 Wind Speed & Direction Sensor measurements 'GT_WS_mph' and 'GT_WindDir'
 		PulseCount(GT_WS_mph,1,1,1,1,0.2192,0)
-		BrHalf(GT_WindDir,1,mV2500,9,1,1,2500,True,20000,_60Hz,355,0)
+		BrHalf(GT_WindDir,1,mV2500,9,2,1,2500,True,20000,_60Hz,355,0)
 		If GT_WindDir>=355 Or GT_WindDir<0 Then GT_WindDir=0
 
 		'Generic Differential Voltage measurements 'T11_WS_mph'
