@@ -103,7 +103,7 @@ stations:
         <<: *05108-45_mph
         ch: P_LL
       dir:
-        ch_1: 1
+        ch_1: 4
         ch_2: VX2
   - station_name: "Grizzly"
     model_series: "CR1000"
