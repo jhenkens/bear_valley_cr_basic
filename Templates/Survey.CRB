@@ -21,6 +21,10 @@ Const SITE_LOCATION_PRESSURE=74.11727
 Public BattV: Units BattV=Volts
 
 Dim PTemp_C
+Public Watchdog_Success As Boolean
+{% set watchog_skip_iterations = 60 / main_scan_interval_count %}
+Public Watchdog_Initial As UINT1 = 30
+Public Watchdog_Count As UINT1 = 0
 
 {% if sensor_cabinet_temperature["disabled"] != True %}
 Dim Temp_F
@@ -28,7 +32,6 @@ Dim Temp_F
 
 
 {% if enable_precip_and_snow_sensors %}
-Public Flag(1) As Boolean
 Public DisableSnowDepth As Boolean
 
 {% with sensor_index=1 %}
@@ -85,6 +88,19 @@ BeginProg
 	{% endif %}
 	'Main Scan
 	Scan({{ main_scan_interval_count }},{{ main_scan_interval_unit }},1,0)
+		If Watchdog_Count >= {{ watchog_skip_iterations | int }} ' Only turn on once a minute
+			If Watchdog_Initial > 0 OR Watchdog_Success
+				{% include "Include/Watchdog_Enable.CRB" %}
+			End If
+			If Watchdog_Initial > 0
+				Watchdog_Initial = Watchdog_Initial - 1
+			End If
+			Watchdog_Count = 0
+		Else
+			{% include "Include/Watchdog_Disable.CRB" %}
+			Watchdog_Count = Watchdog_Count + 1
+		End If
+
 		{% include find_template("Windspeed_Scan.CRB") %}
 
 		{% if enable_precip_and_snow_sensors %}
@@ -114,12 +130,6 @@ BeginProg
 {% if enable_precip_and_snow_sensors %}
 SlowSequence
 	Scan(10,Sec,1,0)
-		If Flag(1) = True
-			DisableSnowDepth = True
-		Else
-			DisableSnowDepth = False
-		End If
-
 		{% with sensor_index=1 %}
 		{% include "Include/SR50AT_M/SR50AT_M_Sample.CRB" %}
 		{% endwith %}

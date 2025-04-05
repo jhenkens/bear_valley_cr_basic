@@ -97,11 +97,13 @@ Public WindDir : Units WindDir=degrees
 Public BattV: Units BattV=Volts
 
 Dim PTemp_C
+Public Watchdog_Success As Boolean
+Public Watchdog_Initial As UINT1 = 30
+Public Watchdog_Count As UINT1 = 0
 
 Dim Temp_F
 
 
-Public Flag(1) As Boolean
 Public DisableSnowDepth As Boolean
 
 
@@ -345,6 +347,17 @@ BeginProg
 	SR50ATCtrl_2 = True
 	'Main Scan
 	Scan(3,Sec,1,0)
+		If Watchdog_Count >= 20 ' Only turn on once a minute
+			If Watchdog_Initial > 0 OR Watchdog_Success
+			End If
+			If Watchdog_Initial > 0
+				Watchdog_Initial = Watchdog_Initial - 1
+			End If
+			Watchdog_Count = 0
+		Else
+			Watchdog_Count = Watchdog_Count + 1
+		End If
+
 		'05103 Wind Speed & Direction Sensor measurements 'WS_mph' and 'WindDir'
 		PulseCount(WS_mph,1,U10,5,1,0.2192,0)
 		BrHalf(WindDir,1,mV5000,U8,U7,1,2500,True,20000,60,355,0)
@@ -367,12 +380,6 @@ BeginProg
 	
 SlowSequence
 	Scan(10,Sec,1,0)
-		If Flag(1) = True
-			DisableSnowDepth = True
-		Else
-			DisableSnowDepth = False
-		End If
-
 		If DisableSnowDepth
 			SR50ATCtrl_1 = False
 			SR50AT_1_Snow_Depth = 0
