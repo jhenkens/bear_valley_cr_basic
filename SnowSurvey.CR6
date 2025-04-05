@@ -98,8 +98,8 @@ Public BattV: Units BattV=Volts
 
 Dim PTemp_C
 Public Watchdog_Success As Boolean
-Public Watchdog_Initial As UINT1 = 30
-Public Watchdog_Count As UINT1 = 0
+Public Watchdog_Initial As Long = 30
+Public Watchdog_Count As Long = 0
 
 Dim Temp_F
 

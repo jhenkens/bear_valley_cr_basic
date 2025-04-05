@@ -23,8 +23,8 @@ Public BattV: Units BattV=Volts
 Dim PTemp_C
 Public Watchdog_Success As Boolean
 {% set watchog_skip_iterations = 60 / main_scan_interval_count %}
-Public Watchdog_Initial As UINT1 = 30
-Public Watchdog_Count As UINT1 = 0
+Public Watchdog_Initial As Long = 30
+Public Watchdog_Count As Long = 0
 
 {% if sensor_cabinet_temperature["disabled"] != True %}
 Dim Temp_F
