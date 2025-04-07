@@ -54,6 +54,9 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"Error in {file_name}")
             raise
+        
+        if not content[-1] == "\n":
+            content += "\n"
 
         with open(dest_file_name, "w") as dest_file:
             dest_file.write(content)
