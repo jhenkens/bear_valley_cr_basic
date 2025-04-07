@@ -230,6 +230,7 @@ BeginProg
 		Watchdog_NewOutput = True
 		If Watchdog_Counter < 19 Then
 			Watchdog_NewOutput = False
+			Watchdog_Counter = Watchdog_Counter + 1
 		Else
 			Watchdog_Counter = 0
 

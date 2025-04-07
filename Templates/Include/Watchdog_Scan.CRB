@@ -4,6 +4,7 @@
 		Watchdog_NewOutput = True
 		If Watchdog_Counter < {{ watchdog["skip_iterations"] | int }} Then
 			Watchdog_NewOutput = False
+			Watchdog_Counter = Watchdog_Counter + 1
 		Else
 			Watchdog_Counter = 0
 
