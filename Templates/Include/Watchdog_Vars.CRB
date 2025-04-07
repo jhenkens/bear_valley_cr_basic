@@ -10,6 +10,7 @@ Public Watchdog_Initial As Long = 30
 
 {% if watchdog["use_ping"] %}
 Dim Watchdog_PingResponse = 0
+Dim Watchdog_SS1990 As Long = 0
 Public Watchdog_LastSuccessfulPing As Long = 0
 {% endif %}
 

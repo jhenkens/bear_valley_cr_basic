@@ -2,33 +2,33 @@
 {% set pin = watchdog["pin"] | default("1") %}
 
 		Watchdog_NewOutput = True
-		If Watchdog_Count < {{ watchdog["skip_iterations"] | int }} 
+		If Watchdog_Counter < {{ watchdog["skip_iterations"] | int }} Then
 			Watchdog_NewOutput = False
-		ElseIf
-			Watchdog_Count = 0
+		Else
+			Watchdog_Counter = 0
 
 			{% if watchdog["use_ping"] %}
-			SS1990 = SecsSince1990(Public.Timestamp,1)
-			If SS1990 - Watchdog_LastSuccessfulPing > {{ 60 * 60 * 6 | int}}
+			Watchdog_SS1990 = SecsSince1990(Public.Timestamp,1)
+			If Watchdog_SS1990 - Watchdog_LastSuccessfulPing > {{ 60 * 60 * 6 | int}} Then
 				Watchdog_NewOutput = False
 			End If
 			{% endif %}
 
 			{% if watchdog["use_initial"] %}
 			' Keep Initial as last state, since initial can override failures
-			If Watchdog_Initial > 0
+			If Watchdog_Initial > 0 Then
 				Watchdog_Initial = Watchdog_Initial - 1
 				Watchdog_NewOutput = True
-			ElseIf NOT Watchdog_InitialSuccess
+			ElseIf NOT Watchdog_InitialSuccess Then
 				Watchdog_NewOutput = False
 			End If
 			{% endif %}
 
-			If Watchdog_ForceRestart
+			If Watchdog_ForceRestart Then
 				Watchdog_NewOutput = False
 			End If
 		End If
-		If Watchdog_NewOutput != Watchdog_Output
+		If Watchdog_NewOutput <> Watchdog_Output Then
 			Watchdog_Output = Watchdog_NewOutput
 			PortSet({{ pin }}, Watchdog_Output)
 		EndIf

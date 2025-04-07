@@ -1,8 +1,8 @@
 {% if watchdog and watchdog["enabled"] and watchdog["use_ping"] %}
 SlowSequence
 	Scan(10,Min,1,0)
-		PingResponse=PingIP("8.8.8.8",1000)
-		If PingResponse > 0
+		Watchdog_PingResponse=PingIP("8.8.8.8",1000)
+		If Watchdog_PingResponse > 0
 			Watchdog_LastSuccessfulPing = SecsSince1990(Public.Timestamp,1) 
 		EndIf
 	NextScan

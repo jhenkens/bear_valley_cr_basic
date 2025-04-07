@@ -109,6 +109,7 @@ Public Watchdog_InitialSuccess As Boolean = False
 Public Watchdog_Initial As Long = 30
 
 Dim Watchdog_PingResponse = 0
+Dim Watchdog_SS1990 As Long = 0
 Public Watchdog_LastSuccessfulPing As Long = 0
 
 Public Watchdog_Counter As Long = 0
@@ -227,29 +228,29 @@ BeginProg
 	Scan(3,Sec,1,0)
 
 		Watchdog_NewOutput = True
-		If Watchdog_Count < 19 
+		If Watchdog_Counter < 19 Then
 			Watchdog_NewOutput = False
-		ElseIf
-			Watchdog_Count = 0
+		Else
+			Watchdog_Counter = 0
 
-			SS1990 = SecsSince1990(Public.Timestamp,1)
-			If SS1990 - Watchdog_LastSuccessfulPing > 21600
+			Watchdog_SS1990 = SecsSince1990(Public.Timestamp,1)
+			If Watchdog_SS1990 - Watchdog_LastSuccessfulPing > 21600 Then
 				Watchdog_NewOutput = False
 			End If
 
 			' Keep Initial as last state, since initial can override failures
-			If Watchdog_Initial > 0
+			If Watchdog_Initial > 0 Then
 				Watchdog_Initial = Watchdog_Initial - 1
 				Watchdog_NewOutput = True
-			ElseIf NOT Watchdog_InitialSuccess
+			ElseIf NOT Watchdog_InitialSuccess Then
 				Watchdog_NewOutput = False
 			End If
 
-			If Watchdog_ForceRestart
+			If Watchdog_ForceRestart Then
 				Watchdog_NewOutput = False
 			End If
 		End If
-		If Watchdog_NewOutput != Watchdog_Output
+		If Watchdog_NewOutput <> Watchdog_Output Then
 			Watchdog_Output = Watchdog_NewOutput
 			PortSet(1, Watchdog_Output)
 		EndIf
@@ -299,8 +300,8 @@ SlowSequence
 
 SlowSequence
 	Scan(10,Min,1,0)
-		PingResponse=PingIP("8.8.8.8",1000)
-		If PingResponse > 0
+		Watchdog_PingResponse=PingIP("8.8.8.8",1000)
+		If Watchdog_PingResponse > 0
 			Watchdog_LastSuccessfulPing = SecsSince1990(Public.Timestamp,1) 
 		EndIf
 	NextScan
