@@ -97,10 +97,6 @@ Public WindDir : Units WindDir=degrees
 Public BattV: Units BattV=Volts
 
 Dim PTemp_C
-Public Watchdog_Success As Boolean
-Public Watchdog_Initial As Long = 30
-Public Watchdog_Count As Long = 0
-
 Dim Temp_F
 
 
@@ -347,17 +343,6 @@ BeginProg
 	SR50ATCtrl_2 = True
 	'Main Scan
 	Scan(3,Sec,1,0)
-		If Watchdog_Count >= 20 ' Only turn on once a minute
-			If Watchdog_Initial > 0 OR Watchdog_Success
-			End If
-			If Watchdog_Initial > 0
-				Watchdog_Initial = Watchdog_Initial - 1
-			End If
-			Watchdog_Count = 0
-		Else
-			Watchdog_Count = Watchdog_Count + 1
-		End If
-
 		'05103 Wind Speed & Direction Sensor measurements 'WS_mph' and 'WindDir'
 		PulseCount(WS_mph,1,U10,5,1,0.2192,0)
 		BrHalf(WindDir,1,mV5000,U8,U7,1,2500,True,20000,60,355,0)
@@ -492,4 +477,6 @@ SlowSequence
 		'Convert BaroVUE10 (SDI-12) Barometric Pressure Sensor measurement 'BaroV_Temp' from deg C to deg F
 		BaroV_Temp=BaroV_Temp*1.8+32
 	NextScan
+
+
 EndProg

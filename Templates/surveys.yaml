@@ -20,6 +20,11 @@ shared:
     dir:
       ch_1: 3
       ch_2: 1
+  watchdog: &watchdog
+    skip_iterations: 19
+    use_initial: true
+    use_ping: true
+    pin: 1
 
 CR1000:
   panel_frequency_filter: _60Hz
@@ -39,6 +44,9 @@ stations:
       mph:
         <<: *05103_mph
         ch: 1
+    watchdog:
+      <<: *watchdog
+      enabled: true
   - station_name: "KoalaTop"
     model_series: "CR1000"
     legacy_tables:

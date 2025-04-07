@@ -97,10 +97,6 @@ Public WindDir : Units WindDir=degrees
 Public BattV: Units BattV=Volts
 
 Dim PTemp_C
-Public Watchdog_Success As Boolean
-Public Watchdog_Initial As Long = 30
-Public Watchdog_Count As Long = 0
-
 Dim Temp_F
 
 
@@ -223,17 +219,6 @@ EndTable
 BeginProg
 	'Main Scan
 	Scan(3,Sec,1,0)
-		If Watchdog_Count >= 20 ' Only turn on once a minute
-			If Watchdog_Initial > 0 OR Watchdog_Success
-			End If
-			If Watchdog_Initial > 0
-				Watchdog_Initial = Watchdog_Initial - 1
-			End If
-			Watchdog_Count = 0
-		Else
-			Watchdog_Count = Watchdog_Count + 1
-		End If
-
 		'05108-45 Wind Speed & Direction Sensor measurements 'WS_mph' and 'WindDir'
 		PulseCount(WS_mph,1,P_LL,1,1,0.3726,0)
 		BrHalf(WindDir,1,mV2500,4,VX2,1,2500,False,20000,60,355,0)
@@ -280,4 +265,6 @@ SlowSequence
 
 
 	NextScan
+
+
 EndProg

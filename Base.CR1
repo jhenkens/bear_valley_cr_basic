@@ -97,14 +97,22 @@ Public WindDir : Units WindDir=degrees
 Public BattV: Units BattV=Volts
 
 Dim PTemp_C
-Public Watchdog_Success As Boolean
-Public Watchdog_Initial As Long = 30
-Public Watchdog_Count As Long = 0
-
 Dim Temp_F
 
 
 
+Public Watchdog_ForceRestart As Boolean = False
+Public Watchdog_Disable As Boolean = False
+Public Watchdog_Output As Boolean = False
+
+Public Watchdog_InitialSuccess As Boolean = False
+Public Watchdog_Initial As Long = 30
+
+Dim Watchdog_PingResponse = 0
+Public Watchdog_LastSuccessfulPing As Long = 0
+
+Public Watchdog_Counter As Long = 0
+Dim Watchdog_NewOutput As Boolean = False
 
 'Define Data Tables
 DataTable(Table1,True,-1)
@@ -217,16 +225,34 @@ EndTable
 BeginProg
 	'Main Scan
 	Scan(3,Sec,1,0)
-		If Watchdog_Count >= 20 ' Only turn on once a minute
-			If Watchdog_Initial > 0 OR Watchdog_Success
+
+		Watchdog_NewOutput = True
+		If Watchdog_Count < 19 
+			Watchdog_NewOutput = False
+		ElseIf
+			Watchdog_Count = 0
+
+			SS1990 = SecsSince1990(Public.Timestamp,1)
+			If SS1990 - Watchdog_LastSuccessfulPing > 21600
+				Watchdog_NewOutput = False
 			End If
+
+			' Keep Initial as last state, since initial can override failures
 			If Watchdog_Initial > 0
 				Watchdog_Initial = Watchdog_Initial - 1
+				Watchdog_NewOutput = True
+			ElseIf NOT Watchdog_InitialSuccess
+				Watchdog_NewOutput = False
 			End If
-			Watchdog_Count = 0
-		Else
-			Watchdog_Count = Watchdog_Count + 1
+
+			If Watchdog_ForceRestart
+				Watchdog_NewOutput = False
+			End If
 		End If
+		If Watchdog_NewOutput != Watchdog_Output
+			Watchdog_Output = Watchdog_NewOutput
+			PortSet(1, Watchdog_Output)
+		EndIf
 
 		'05103 Wind Speed & Direction Sensor measurements 'WS_mph' and 'WindDir'
 		PulseCount(WS_mph,1,1,1,1,0.2192,0)
@@ -270,4 +296,13 @@ SlowSequence
 
 
 	NextScan
+
+SlowSequence
+	Scan(10,Min,1,0)
+		PingResponse=PingIP("8.8.8.8",1000)
+		If PingResponse > 0
+			Watchdog_LastSuccessfulPing = SecsSince1990(Public.Timestamp,1) 
+		EndIf
+	NextScan
+
 EndProg

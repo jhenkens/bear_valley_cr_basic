@@ -1,0 +1,18 @@
+{% if watchdog and watchdog["enabled"] %}
+Public Watchdog_ForceRestart As Boolean = False
+Public Watchdog_Disable As Boolean = False
+Public Watchdog_Output As Boolean = False
+
+{% if watchdog["use_initial"] %}
+Public Watchdog_InitialSuccess As Boolean = False
+Public Watchdog_Initial As Long = 30
+{% endif %}
+
+{% if watchdog["use_ping"] %}
+Dim Watchdog_PingResponse = 0
+Public Watchdog_LastSuccessfulPing As Long = 0
+{% endif %}
+
+Public Watchdog_Counter As Long = 0
+Dim Watchdog_NewOutput As Boolean = False
+{% endif %}
