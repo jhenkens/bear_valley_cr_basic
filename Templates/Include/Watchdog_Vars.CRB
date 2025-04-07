@@ -1,6 +1,6 @@
 {% if watchdog and watchdog["enabled"] %}
 Public Watchdog_ForceRestart As Boolean = False
-Public Watchdog_Disable As Boolean = False
+Public Watchdog_Bypass As Boolean = False
 Public Watchdog_Output As Boolean = False
 
 {% if watchdog["use_initial"] %}

@@ -26,6 +26,8 @@
 
 			If Watchdog_ForceRestart Then
 				Watchdog_NewOutput = False
+			ElseIf Watchdog_Bypass Then
+				Watchdog_NewOutput = True
 			End If
 		End If
 		If Watchdog_NewOutput <> Watchdog_Output Then

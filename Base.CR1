@@ -102,7 +102,7 @@ Dim Temp_F
 
 
 Public Watchdog_ForceRestart As Boolean = False
-Public Watchdog_Disable As Boolean = False
+Public Watchdog_Bypass As Boolean = False
 Public Watchdog_Output As Boolean = False
 
 Public Watchdog_InitialSuccess As Boolean = False
@@ -248,6 +248,8 @@ BeginProg
 
 			If Watchdog_ForceRestart Then
 				Watchdog_NewOutput = False
+			ElseIf Watchdog_Bypass Then
+				Watchdog_NewOutput = True
 			End If
 		End If
 		If Watchdog_NewOutput <> Watchdog_Output Then
