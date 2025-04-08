@@ -108,7 +108,7 @@ Public Watchdog_Output As Boolean = False
 Public Watchdog_InitialSuccess As Boolean = False
 Public Watchdog_Initial As Long = 30
 
-Dim Watchdog_PingResponse = 0
+Public Watchdog_PingResponse = 0
 Dim Watchdog_SS1990 As Long = 0
 Public Watchdog_LastSuccessfulPing As Long = 0
 
@@ -304,7 +304,7 @@ SlowSequence
 SlowSequence
 	Scan(10,Min,1,0)
 		Watchdog_PingResponse=PingIP("8.8.8.8",1000)
-		If Watchdog_PingResponse > 0
+		If Watchdog_PingResponse > 0 Then
 			Watchdog_LastSuccessfulPing = SecsSince1990(Public.Timestamp,1) 
 		EndIf
 	NextScan
