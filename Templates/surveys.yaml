@@ -113,6 +113,9 @@ stations:
       dir:
         ch_1: 4
         ch_2: VX2
+    watchdog:
+      <<: *watchdog
+      enabled: true
   - station_name: "Grizzly"
     model_series: "CR1000"
     include_mesowest: False
