@@ -2,8 +2,8 @@
 SlowSequence
 	Scan(10,Min,1,0)
 		Watchdog_PingResponse=PingIP("8.8.8.8",1000)
-		If Watchdog_PingResponse > 0
-			Watchdog_LastSuccessfulPing = SecsSince1990(Public.Timestamp,1) 
+		If Watchdog_PingResponse > 0 Then
+			Watchdog_LastSuccessfulPing = Status.Timestamp(0,1)
 		EndIf
 	NextScan
 {% endif %}

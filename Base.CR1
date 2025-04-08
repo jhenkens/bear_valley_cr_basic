@@ -108,8 +108,8 @@ Public Watchdog_Output As Boolean = False
 Public Watchdog_InitialSuccess As Boolean = False
 Public Watchdog_Initial As Long = 30
 
-Public Watchdog_PingResponse = 0
-Dim Watchdog_SS1990 As Long = 0
+Dim Watchdog_PingResponse = 0
+Dim Watchdog_CurrentTime As Long = 0
 Public Watchdog_LastSuccessfulPing As Long = 0
 
 Public Watchdog_Counter As Long = 0
@@ -234,8 +234,8 @@ BeginProg
 		Else
 			Watchdog_Counter = 0
 
-			Watchdog_SS1990 = SecsSince1990(Public.Timestamp,1)
-			If Watchdog_SS1990 - Watchdog_LastSuccessfulPing > 21600 Then
+			Watchdog_CurrentTime = Status.Timestamp(0,1)
+			If Watchdog_CurrentTime - Watchdog_LastSuccessfulPing > 21600 Then
 				Watchdog_NewOutput = False
 			End If
 
@@ -305,7 +305,7 @@ SlowSequence
 	Scan(10,Min,1,0)
 		Watchdog_PingResponse=PingIP("8.8.8.8",1000)
 		If Watchdog_PingResponse > 0 Then
-			Watchdog_LastSuccessfulPing = SecsSince1990(Public.Timestamp,1) 
+			Watchdog_LastSuccessfulPing = Status.Timestamp(0,1)
 		EndIf
 	NextScan
 

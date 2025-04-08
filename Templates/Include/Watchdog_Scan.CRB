@@ -9,8 +9,8 @@
 			Watchdog_Counter = 0
 
 			{% if watchdog["use_ping"] %}
-			Watchdog_SS1990 = SecsSince1990(Public.Timestamp,1)
-			If Watchdog_SS1990 - Watchdog_LastSuccessfulPing > {{ 60 * 60 * 6 | int}} Then
+			Watchdog_CurrentTime = Status.Timestamp(0,1)
+			If Watchdog_CurrentTime - Watchdog_LastSuccessfulPing > {{ 60 * 60 * 6 | int}} Then
 				Watchdog_NewOutput = False
 			End If
 			{% endif %}
