@@ -44,9 +44,6 @@ stations:
       mph:
         <<: *05103_mph
         ch: 1
-    watchdog:
-      <<: *watchdog
-      enabled: true
   - station_name: "KoalaTop"
     model_series: "CR1000"
     legacy_tables:

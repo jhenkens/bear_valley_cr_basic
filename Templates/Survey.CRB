@@ -78,7 +78,7 @@ BeginProg
 	SR50AT_Counter_1 = 1
 	SR50AT_Counter_2 = 1
 	SR50AT_1_Initial_Depth = 31.03
-	SR50AT_2_Initial_Depth = 233.85
+	SR50AT_2_Initial_Depth = 235.85
 	SR50ATCtrl_1 = True
 	SR50ATCtrl_2 = True
 	{% endif %}
