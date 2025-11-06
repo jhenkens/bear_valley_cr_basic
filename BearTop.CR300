@@ -297,7 +297,7 @@ SlowSequence
 
 		'EE181 (panel switched power) Temperature & Relative Humidity Sensor measurements 'AirTF' and 'RH'
 		SW12(1)
-		Delay(0,2,Sec)
+		Delay(0,3,Sec)
 		VoltSE(AirTF,1,mV2500,2,False,0,60,0.18,-40)
 		VoltSE(RH,1,mV2500,3,False,0,60,0.1,0)
 		If RH>100 AND RH<108 Then RH=100

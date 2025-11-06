@@ -88,9 +88,6 @@ Public TdF : Units TdF=Deg F
 Public TwF : Units TwF=Deg F
 Public RH : Units RH=%
 Public WC_F : Units WC_F=Deg F
-'Temperature error detection variables (zero dropout validation enabled)
-Dim AirTF_Raw
-Dim AirTF_Prev
 
 'Windspeed Variables
 Public WS_mph : Units WS_mph=miles/hour
@@ -247,20 +244,10 @@ SlowSequence
 		TCDiff(Temp_F,1,mV2_5C,3,TypeT,PTemp_C,True,0,_60Hz,1.8,32)
 
 		'EE181 (constant power) Temperature & Relative Humidity Sensor measurements 'AirTF' and 'RH'
-		VoltSE(AirTF_Raw,1,mV2500,1,False,0,_60Hz,0.18,-40)
+		VoltSE(AirTF,1,mV2500,1,False,0,_60Hz,0.18,-40)
 		VoltSE(RH,1,mV2500,2,False,0,_60Hz,0.1,0)
 		If RH>100 AND RH<108 Then RH=100
 
-		'Temperature validation: detect and filter erroneous zero readings
-		'If temp drops to near-zero (±1°F) with a drop >10°F, ignore the reading
-		If (AirTF_Raw >= -1 AND AirTF_Raw <= 1) AND (AirTF_Prev - AirTF_Raw > 10) Then
-			'Probable sensor error - keep previous valid temperature
-			AirTF = AirTF_Prev
-		Else
-			'Valid reading - update temperature and store as previous
-			AirTF = AirTF_Raw
-		EndIf
-		AirTF_Prev = AirTF_Raw
 		TdF = DewPoint_Calc(AirTF, RH)
 		TwF = WetBulb_Calc(AirTF, TdF, RH)
 

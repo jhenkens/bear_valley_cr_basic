@@ -13,7 +13,7 @@
 {% else %}
 		PortSet(9,1)
 {% endif %}
-		Delay(0,2,Sec)
+		Delay(0,3,Sec)
 {% endif %}
 {% if sensor_air_temperature["validate_zero_dropout"] | default(False) %}
 {% set var_name = "AirTF_Raw" %}
