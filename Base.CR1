@@ -247,8 +247,8 @@ SlowSequence
 		TCDiff(Temp_F,1,mV2_5C,3,TypeT,PTemp_C,True,0,_60Hz,1.8,32)
 
 		'EE181 (constant power) Temperature & Relative Humidity Sensor measurements 'AirTF' and 'RH'
-		VoltSE(AirTF_Raw,1,mV2500,,False,0,_60Hz,0.18,-40)
-		VoltSE(RH,1,mV2500,,False,0,_60Hz,0.1,0)
+		VoltSE(AirTF_Raw,1,mV2500,1,False,0,_60Hz,0.18,-40)
+		VoltSE(RH,1,mV2500,2,False,0,_60Hz,0.1,0)
 		If RH>100 AND RH<108 Then RH=100
 
 		'Temperature validation: detect and filter erroneous zero readings

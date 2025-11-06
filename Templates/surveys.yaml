@@ -39,6 +39,7 @@ stations:
     sensor_cabinet_temperature:
       pin: 3
     sensor_air_temperature:
+      <<: *sensor_air_temperature
       validate_zero_dropout: true  # Filter erroneous zero readings from loose wire
     sensor_windspeed:
       <<: *sensor_windspeed
