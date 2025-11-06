@@ -15,4 +15,9 @@ Public {{ prefix }}WC_F : Units {{ prefix }}WC_F=Deg F
 {% if settings["interim_celsius"] | default(False) %}
 Dim {{ prefix }}AirTC
 {% endif %}
+{% if sensor_air_temperature["validate_zero_dropout"] | default(False) %}
+'Temperature error detection variables (zero dropout validation enabled)
+Dim {{ prefix }}AirTF_Raw
+Dim {{ prefix }}AirTF_Prev
+{% endif %}
 {% endfor %}

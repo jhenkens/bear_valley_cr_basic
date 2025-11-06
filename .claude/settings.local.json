@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./precompile_survey_code.py)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

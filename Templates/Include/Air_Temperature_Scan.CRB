@@ -15,7 +15,12 @@
 {% endif %}
 		Delay(0,2,Sec)
 {% endif %}
-		VoltSE(AirTF,1,{{ range }},{{ sensor_air_temperature["air_tf_chan"] }},False,0,{{ panel_frequency_filter }},0.18,-40)
+{% if sensor_air_temperature["validate_zero_dropout"] | default(False) %}
+{% set var_name = "AirTF_Raw" %}
+{% else %}
+{% set var_name = "AirTF" %}
+{% endif %}
+		VoltSE({{ var_name }},1,{{ range }},{{ sensor_air_temperature["air_tf_chan"] }},False,0,{{ panel_frequency_filter }},0.18,-40)
 		VoltSE(RH,1,{{ range }},{{ sensor_air_temperature["rh_chan"] }},False,0,{{ panel_frequency_filter }},0.1,0)
 		If RH>100 AND RH<108 Then RH=100
 
@@ -25,6 +30,18 @@
 {% else %}
 		PortSet(9,0)
 {% endif %}
+{% endif %}
+{% if sensor_air_temperature["validate_zero_dropout"] | default(False) %}
+		'Temperature validation: detect and filter erroneous zero readings
+		'If temp drops to near-zero (±1°F) with a drop >10°F, ignore the reading
+		If (AirTF_Raw >= -1 AND AirTF_Raw <= 1) AND (AirTF_Prev - AirTF_Raw > 10) Then
+			'Probable sensor error - keep previous valid temperature
+			AirTF = AirTF_Prev
+		Else
+			'Valid reading - update temperature and store as previous
+			AirTF = AirTF_Raw
+		EndIf
+		AirTF_Prev = AirTF_Raw
 {% endif %}
 		TdF = DewPoint_Calc(AirTF, RH)
 		TwF = WetBulb_Calc(AirTF, TdF, RH)

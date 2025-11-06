@@ -38,6 +38,8 @@ stations:
         file: Include/Stations/Base/Table2.CRB
     sensor_cabinet_temperature:
       pin: 3
+    sensor_air_temperature:
+      validate_zero_dropout: true  # Filter erroneous zero readings from loose wire
     sensor_windspeed:
       <<: *sensor_windspeed
       model: "05103"
