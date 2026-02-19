@@ -33,7 +33,11 @@
 						SR50AT_{{ sensor_index }}_Initial_Depth = SR50AT_{{ sensor_index }}_TCDT
 						SR50AT_MID_{{ sensor_index }} = False
 					EndIf
-					SR50AT_{{ sensor_index }}_Snow_Depth = SR50AT_{{ sensor_index }}_Initial_Depth - SR50AT_{{ sensor_index }}_TCDT
+					If SR50AT_{{ sensor_index }}_TCDT < SR50AT_Minimum_Depth Then
+						SR50AT_{{ sensor_index }}_Snow_Depth = SR50AT_{{ sensor_index }}_Initial_Depth - SR50AT_Minimum_Depth
+					Else
+						SR50AT_{{ sensor_index }}_Snow_Depth = SR50AT_{{ sensor_index }}_Initial_Depth - SR50AT_{{ sensor_index }}_TCDT
+					EndIf
 				EndIf
 			EndIf
 		EndIf

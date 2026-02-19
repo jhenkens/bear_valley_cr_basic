@@ -3,6 +3,7 @@
 
 'Constants
 Const SITE_LOCATION_PRESSURE=74.11727
+Const SR50AT_Minimum_Depth=14 'Minimum depth for SR50AT-M Snow Depth measurement in inches
 
 'Functions
 

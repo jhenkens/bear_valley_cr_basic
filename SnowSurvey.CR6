@@ -3,6 +3,7 @@
 
 'Constants
 Const SITE_LOCATION_PRESSURE=74.11727
+Const SR50AT_Minimum_Depth=14 'Minimum depth for SR50AT-M Snow Depth measurement in inches
 
 'Functions
 
@@ -400,7 +401,11 @@ SlowSequence
 						SR50AT_1_Initial_Depth = SR50AT_1_TCDT
 						SR50AT_MID_1 = False
 					EndIf
-					SR50AT_1_Snow_Depth = SR50AT_1_Initial_Depth - SR50AT_1_TCDT
+					If SR50AT_1_TCDT < SR50AT_Minimum_Depth Then
+						SR50AT_1_Snow_Depth = SR50AT_1_Initial_Depth - SR50AT_Minimum_Depth
+					Else
+						SR50AT_1_Snow_Depth = SR50AT_1_Initial_Depth - SR50AT_1_TCDT
+					EndIf
 				EndIf
 			EndIf
 		EndIf
@@ -440,7 +445,11 @@ SlowSequence
 						SR50AT_2_Initial_Depth = SR50AT_2_TCDT
 						SR50AT_MID_2 = False
 					EndIf
-					SR50AT_2_Snow_Depth = SR50AT_2_Initial_Depth - SR50AT_2_TCDT
+					If SR50AT_2_TCDT < SR50AT_Minimum_Depth Then
+						SR50AT_2_Snow_Depth = SR50AT_2_Initial_Depth - SR50AT_Minimum_Depth
+					Else
+						SR50AT_2_Snow_Depth = SR50AT_2_Initial_Depth - SR50AT_2_TCDT
+					EndIf
 				EndIf
 			EndIf
 		EndIf
