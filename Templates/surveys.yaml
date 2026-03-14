@@ -96,12 +96,12 @@ stations:
       - name: Table3
         file: Include/Stations/BearTop/Table3.CRB
     sensor_cabinet_temperature:
-      pin: 3
+      disabled: True
     sensor_air_temperature:
       <<: *sensor_air_temperature
       switched_power: True
-      air_tf_chan: 2
-      rh_chan: 3
+      air_tf_chan: 5
+      rh_chan: 6
     sensor_windspeed:
       <<: *koalatop_windspeed
       mph:

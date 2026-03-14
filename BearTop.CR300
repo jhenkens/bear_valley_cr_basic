@@ -98,7 +98,6 @@ Public WindDir : Units WindDir=degrees
 Public BattV: Units BattV=Volts
 
 Dim PTemp_C
-Dim Temp_F
 
 
 
@@ -220,13 +219,10 @@ DataTable(StationDaily,True,30)
 	Minimum(1,BattV,FP2,False,False)
 
 	Minimum(1,PTemp_C,FP2, False, False)
-	Minimum(1,Temp_F,FP2, False, False)
 	
 	Average(1,PTemp_C,FP2, False)
-	Average(1,Temp_F,FP2, False)
 
 	Maximum(1,PTemp_C,FP2, False, False)
-	Maximum(1,Temp_F,FP2, False, False)
 EndTable
 
 'Main Program
@@ -293,14 +289,12 @@ SlowSequence
 		'Default CR300 Datalogger Wiring Panel Temperature measurement 'PTemp_C'
 		PanelTemp(PTemp_C,60)
 		
-		'Type T Thermocouple measurements 'Temp_F'
-		TCDiff(Temp_F,1,mv34,3,TypeT,PTemp_C,True,0,60,1.8,32)
 
 		'EE181 (panel switched power) Temperature & Relative Humidity Sensor measurements 'AirTF' and 'RH'
 		SW12(1)
 		Delay(0,3,Sec)
-		VoltSE(AirTF,1,mV2500,2,False,0,60,0.18,-40)
-		VoltSE(RH,1,mV2500,3,False,0,60,0.1,0)
+		VoltSE(AirTF,1,mV2500,5,False,0,60,0.18,-40)
+		VoltSE(RH,1,mV2500,6,False,0,60,0.1,0)
 		If RH>100 AND RH<108 Then RH=100
 
 		SW12(0)
