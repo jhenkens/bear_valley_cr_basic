@@ -3,3 +3,4 @@
 *.env
 *_CC*
 *.tdf
+.claude

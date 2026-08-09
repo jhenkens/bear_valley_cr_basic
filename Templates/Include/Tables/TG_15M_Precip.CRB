@@ -11,4 +11,7 @@ DataTable(TG_15M_Precip,True,2880)
 
 	Sample(1,BaroV_BP,IEEE4)
 	FieldNames("BarometricPressure")
+	
+	Sample(1,DisableSnowDepth,Boolean)
+	FieldNames("SnowDepthDisabled")
 EndTable
