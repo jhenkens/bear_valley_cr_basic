@@ -29,6 +29,7 @@ Dim Temp_F
 
 {% if enable_precip_and_snow_sensors %}
 Public DisableSnowDepth As Boolean
+Dim StartupTime(9)
 
 {% with sensor_index=1 %}
 {% include "Include/SR50AT_M/SR50AT_M_Vars.CRB" %}
@@ -76,6 +77,16 @@ Alias BaroVUE(3)=BaroV_Qual : Units BaroV_Qual=unitless
 'Main Program
 BeginProg
 	{% if enable_precip_and_snow_sensors %}
+	'Default snow depth to disabled for the off-season (May 16 - Oct 31) and
+	'enabled for ski season (Nov 1 - May 15) based on the RTC date at boot.
+	'Julian-day cutoffs (135, 305) are non-leap-year values, so the boundary
+	'can shift by a day in leap years; a tech can still override manually.
+	RealTime(StartupTime)
+	If StartupTime(2) > 135 AND StartupTime(2) < 305 Then
+		DisableSnowDepth = True
+	Else
+		DisableSnowDepth = False
+	EndIf
 	SR50AT_Counter_1 = 1
 	SR50AT_Counter_2 = 1
 	SR50AT_1_Initial_Depth = 31.03
