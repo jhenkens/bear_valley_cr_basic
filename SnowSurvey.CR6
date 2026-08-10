@@ -340,12 +340,11 @@ EndTable
 
 'Main Program
 BeginProg
-	'Default snow depth to disabled for the off-season (May 16 - Oct 31) and
-	'enabled for ski season (Nov 1 - May 15) based on the RTC date at boot.
-	'Julian-day cutoffs (135, 305) are non-leap-year values, so the boundary
-	'can shift by a day in leap years; a tech can still override manually.
+	'Default snow depth to disabled for the off-season (June - October) based
+	'on the RTC date at boot.
+	'RealTime() array: (1)Year (2)Month (3)Day (4)Hour (5)Min (6)Sec (7)uSec (8)DOW (9)DOY
 	RealTime(StartupTime)
-	If StartupTime(2) > 135 AND StartupTime(2) < 305 Then
+	If StartupTime(2)>=6 AND StartupTime(2)<=10 Then
 		DisableSnowDepth = True
 	Else
 		DisableSnowDepth = False
