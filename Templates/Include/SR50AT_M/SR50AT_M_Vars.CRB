@@ -1,7 +1,7 @@
 
 'SR50AT Variable Code - Sensor # {{ sensor_index }}
 'Single measured values.
-Dim SR50AT_{{ sensor_index }}_M(3)
+Public SR50AT_{{ sensor_index }}_M(3)
 Alias SR50AT_{{ sensor_index }}_M(1) = DT_{{ sensor_index }}_M : Units DT_{{ sensor_index }}_M = inches 'Distance from the SR50AT.
 Alias SR50AT_{{ sensor_index }}_M(2) = Q_{{ sensor_index }}_M : Units Q_{{ sensor_index }}_M = unitless 'Quality number.
 Alias SR50AT_{{ sensor_index }}_M(3) = Air_{{ sensor_index }}_M : Units Air_{{ sensor_index }}_M = °C 'Air temperature.
@@ -18,7 +18,7 @@ Dim SR50AT_{{ sensor_index }}_TCDT : Units SR50AT_{{ sensor_index }}_TCDT = inch
 Dim SR50AT_{{ sensor_index }}_Q : Units SR50AT_{{ sensor_index }}_Q = unitless 'Quality number
 Dim SR50AT_{{ sensor_index }}_AirTempC : Units SR50AT_{{ sensor_index }}_AirTempC = °C 'Air temperature
 
-Dim SR50AT_{{ sensor_index }}_Initial_Depth : Units SR50AT_{{ sensor_index }}_Initial_Depth = inches 'Distance to ground.
+Public SR50AT_{{ sensor_index }}_Initial_Depth : Units SR50AT_{{ sensor_index }}_Initial_Depth = inches 'Distance to ground.
 Public SR50AT_{{ sensor_index }}_Snow_Depth : Units SR50AT_{{ sensor_index }}_Snow_Depth = inches 'Snow depth.
 
 'Controls SR50AT measurement. This flag can be manually controlled to

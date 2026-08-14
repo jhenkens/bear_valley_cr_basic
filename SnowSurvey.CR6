@@ -107,7 +107,7 @@ Dim StartupTime(9)
 
 'SR50AT Variable Code - Sensor # 1
 'Single measured values.
-Dim SR50AT_1_M(3)
+Public SR50AT_1_M(3)
 Alias SR50AT_1_M(1) = DT_1_M : Units DT_1_M = inches 'Distance from the SR50AT.
 Alias SR50AT_1_M(2) = Q_1_M : Units Q_1_M = unitless 'Quality number.
 Alias SR50AT_1_M(3) = Air_1_M : Units Air_1_M = °C 'Air temperature.
@@ -124,7 +124,7 @@ Dim SR50AT_1_TCDT : Units SR50AT_1_TCDT = inches 'Temperature corrected distance
 Dim SR50AT_1_Q : Units SR50AT_1_Q = unitless 'Quality number
 Dim SR50AT_1_AirTempC : Units SR50AT_1_AirTempC = °C 'Air temperature
 
-Dim SR50AT_1_Initial_Depth : Units SR50AT_1_Initial_Depth = inches 'Distance to ground.
+Public SR50AT_1_Initial_Depth : Units SR50AT_1_Initial_Depth = inches 'Distance to ground.
 Public SR50AT_1_Snow_Depth : Units SR50AT_1_Snow_Depth = inches 'Snow depth.
 
 'Controls SR50AT measurement. This flag can be manually controlled to
@@ -140,7 +140,7 @@ Dim SR50AT_Counter_1 'used as a counter
 
 'SR50AT Variable Code - Sensor # 2
 'Single measured values.
-Dim SR50AT_2_M(3)
+Public SR50AT_2_M(3)
 Alias SR50AT_2_M(1) = DT_2_M : Units DT_2_M = inches 'Distance from the SR50AT.
 Alias SR50AT_2_M(2) = Q_2_M : Units Q_2_M = unitless 'Quality number.
 Alias SR50AT_2_M(3) = Air_2_M : Units Air_2_M = °C 'Air temperature.
@@ -157,7 +157,7 @@ Dim SR50AT_2_TCDT : Units SR50AT_2_TCDT = inches 'Temperature corrected distance
 Dim SR50AT_2_Q : Units SR50AT_2_Q = unitless 'Quality number
 Dim SR50AT_2_AirTempC : Units SR50AT_2_AirTempC = °C 'Air temperature
 
-Dim SR50AT_2_Initial_Depth : Units SR50AT_2_Initial_Depth = inches 'Distance to ground.
+Public SR50AT_2_Initial_Depth : Units SR50AT_2_Initial_Depth = inches 'Distance to ground.
 Public SR50AT_2_Snow_Depth : Units SR50AT_2_Snow_Depth = inches 'Snow depth.
 
 'Controls SR50AT measurement. This flag can be manually controlled to
