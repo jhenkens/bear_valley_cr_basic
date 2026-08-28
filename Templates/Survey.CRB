@@ -47,6 +47,10 @@ Alias BaroVUE(3)=BaroV_Qual : Units BaroV_Qual=unitless
 {% endwith %}
 {% endif %}
 
+{% if power_control and power_control["enabled"] %}
+{% include find_template("Power_Control_Vars.CRB") %}
+
+{% endif %}
 {% include find_template("Watchdog_Vars.CRB") %}
 
 'Define Data Tables
@@ -96,6 +100,9 @@ BeginProg
 	'Main Scan
 	Scan({{ main_scan_interval_count }},{{ main_scan_interval_unit }},1,0)
 		{% include find_template("Watchdog_Scan.CRB") %}
+		{% if power_control and power_control["enabled"] %}
+		{% include find_template("Power_Control_Scan.CRB") %}
+		{% endif %}
 		{% include find_template("Windspeed_Scan.CRB") %}
 
 		{% if enable_precip_and_snow_sensors %}

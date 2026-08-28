@@ -1,0 +1,4 @@
+{% if power_control and power_control["enabled"] %}
+'Power Control - manual output flags for external power switching devices
+Public EnableMeanwellCharger As Boolean = True
+{% endif %}

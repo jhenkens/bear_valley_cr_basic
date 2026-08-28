@@ -1,0 +1,4 @@
+{%- if power_control and power_control["enabled"] %}
+		'Power Control - drive the Meanwell charger enable signal
+		PortSet({{ power_control["meanwell_charger_pin"] }},EnableMeanwellCharger)
+{% endif %}

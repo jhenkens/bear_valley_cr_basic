@@ -66,6 +66,9 @@ stations:
   - station_name: "SnowSurvey"
     model_series: "CR6"
     enable_precip_and_snow_sensors: true
+    power_control:
+      enabled: true
+      meanwell_charger_pin: U9
     legacy_tables:
       - name: Table1
         file: Include/Stations/SnowSurvey/Table1.CRB
