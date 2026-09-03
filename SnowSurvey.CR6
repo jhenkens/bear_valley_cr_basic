@@ -415,6 +415,11 @@ SlowSequence
 					SR50AT_1_TCDT = Result_SR50AT_1(6,1)
 					SR50AT_1_Q = Result_SR50AT_1(6,2)
 					SR50AT_1_AirTempC = Result_SR50AT_1(6,3)
+					'This sensor has no internal thermistor (SR50A, not SR50AT), so its
+					'reported distance and air temperature are uncompensated. Correct the
+					'distance manually using the station's own air temperature sensor.
+					SR50AT_1_AirTempC = (5/9)*(AirTF-32)
+					SR50AT_1_TCDT = SR50AT_1_TCDT * SQR((SR50AT_1_AirTempC+273.15)/273.15)
 					If SR50AT_MID_1 Then
 						SR50AT_1_Initial_Depth = SR50AT_1_TCDT
 						SR50AT_MID_1 = False

@@ -7,6 +7,9 @@ shared:
   sr50at_sensor_address:
     - C1
     - C3
+  sr50at_external_temp_compensation:
+    - false
+    - false
   sensor_air_temperature: &sensor_air_temperature
     range: mV2500
     air_tf_chan: 1
@@ -66,6 +69,9 @@ stations:
   - station_name: "SnowSurvey"
     model_series: "CR6"
     enable_precip_and_snow_sensors: true
+    sr50at_external_temp_compensation:
+      - true  # C1 was replaced with an SR50A (no thermistor); compensate manually
+      - false
     power_control:
       enabled: true
       meanwell_charger_pin: U9

@@ -29,6 +29,13 @@
 					SR50AT_{{ sensor_index }}_TCDT = Result_SR50AT_{{ sensor_index }}(6,1)
 					SR50AT_{{ sensor_index }}_Q = Result_SR50AT_{{ sensor_index }}(6,2)
 					SR50AT_{{ sensor_index }}_AirTempC = Result_SR50AT_{{ sensor_index }}(6,3)
+{% if sr50at_external_temp_compensation[sensor_index-1] %}
+					'This sensor has no internal thermistor (SR50A, not SR50AT), so its
+					'reported distance and air temperature are uncompensated. Correct the
+					'distance manually using the station's own air temperature sensor.
+					SR50AT_{{ sensor_index }}_AirTempC = (5/9)*(AirTF-32)
+					SR50AT_{{ sensor_index }}_TCDT = SR50AT_{{ sensor_index }}_TCDT * SQR((SR50AT_{{ sensor_index }}_AirTempC+273.15)/273.15)
+{% endif %}
 					If SR50AT_MID_{{ sensor_index }} Then
 						SR50AT_{{ sensor_index }}_Initial_Depth = SR50AT_{{ sensor_index }}_TCDT
 						SR50AT_MID_{{ sensor_index }} = False
