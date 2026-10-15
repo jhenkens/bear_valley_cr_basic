@@ -20,6 +20,11 @@ Const SR50AT_Minimum_Depth=14 'Minimum depth for SR50AT-M Snow Depth measurement
 
 
 Public BattV: Units BattV=Volts
+Public ProgStartEpoch As Long : Units ProgStartEpoch=seconds
+{% if model_series == "CR6" %}
+Public ChargeInput : Units ChargeInput=Volts
+Public ChargeState As String * 24
+{% endif %}
 
 Dim PTemp_C
 {% if sensor_cabinet_temperature["disabled"] != True %}
@@ -80,6 +85,8 @@ Alias BaroVUE(3)=BaroV_Qual : Units BaroV_Qual=unitless
 
 'Main Program
 BeginProg
+	'Record program start time (epoch seconds) for uptime calculation
+	ProgStartEpoch = Status.Timestamp(0,1)
 	{% if enable_precip_and_snow_sensors %}
 	'Default snow depth to disabled for the off-season (June - October) based
 	'on the RTC date at boot.
@@ -152,6 +159,11 @@ SlowSequence
 		Battery(BattV)
 		'Default {{ model_series }} Datalogger Wiring Panel Temperature measurement 'PTemp_C'
 		PanelTemp(PTemp_C,{{ panel_frequency_filter }})
+		{% if model_series == "CR6" %}
+		'CR6 charger input voltage and charge state (from Status table)
+		ChargeInput = Status.ChargeInput(1,1)
+		ChargeState = Status.ChargeState(1,1)
+		{% endif %}
 		
 		{% include find_template("Cabinet_Temperature_Scan.CRB") %}
 

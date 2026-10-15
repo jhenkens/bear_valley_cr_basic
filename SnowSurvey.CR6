@@ -96,6 +96,9 @@ Public WindDir : Units WindDir=degrees
 
 
 Public BattV: Units BattV=Volts
+Public ProgStartEpoch As Long : Units ProgStartEpoch=seconds
+Public ChargeInput : Units ChargeInput=Volts
+Public ChargeState As String * 24
 
 Dim PTemp_C
 Dim Temp_F
@@ -247,6 +250,9 @@ DataTable(TG_5Min_Temp,True,8640)
 	Sample(1,TwF,FP2)
 	Sample(1,RH,FP2)
 	Sample(1,BattV,FP2)
+	Sample(1,ProgStartEpoch,Long)
+	Sample(1,ChargeInput,FP2)
+	Sample(1,ChargeState,String)
 EndTable
 
 DataTable(TG_15M_Precip,True,2880)
@@ -343,6 +349,8 @@ EndTable
 
 'Main Program
 BeginProg
+	'Record program start time (epoch seconds) for uptime calculation
+	ProgStartEpoch = Status.Timestamp(0,1)
 	'Default snow depth to disabled for the off-season (June - October) based
 	'on the RTC date at boot.
 	'RealTime() array: (1)Year (2)Month (3)Day (4)Hour (5)Min (6)Sec (7)uSec (8)DOW (9)DOY
@@ -486,6 +494,9 @@ SlowSequence
 		Battery(BattV)
 		'Default CR6 Datalogger Wiring Panel Temperature measurement 'PTemp_C'
 		PanelTemp(PTemp_C,60)
+		'CR6 charger input voltage and charge state (from Status table)
+		ChargeInput = Status.ChargeInput(1,1)
+		ChargeState = Status.ChargeState(1,1)
 		
 		'Type T Thermocouple measurements 'Temp_F'
 		TCDiff(Temp_F,1,mv200C,U5,TypeT,PTemp_C,True,0,60,1.8,32)

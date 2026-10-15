@@ -96,6 +96,7 @@ Public WindDir : Units WindDir=degrees
 
 
 Public BattV: Units BattV=Volts
+Public ProgStartEpoch As Long : Units ProgStartEpoch=seconds
 
 Dim PTemp_C
 Dim Temp_F
@@ -147,6 +148,7 @@ DataTable(TG_5Min_Temp,True,8640)
 	Sample(1,TwF,FP2)
 	Sample(1,RH,FP2)
 	Sample(1,BattV,FP2)
+	Sample(1,ProgStartEpoch,Long)
 EndTable
 
 DataTable(MW_15M,True,2000)
@@ -213,6 +215,8 @@ EndTable
 
 'Main Program
 BeginProg
+	'Record program start time (epoch seconds) for uptime calculation
+	ProgStartEpoch = Status.Timestamp(0,1)
 	'Main Scan
 	Scan(3,Sec,1,0)
 		'05108-45 Wind Speed & Direction Sensor measurements 'WS_mph' and 'WindDir'

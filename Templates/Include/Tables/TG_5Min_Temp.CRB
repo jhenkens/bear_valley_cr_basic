@@ -12,4 +12,9 @@ DataTable(TG_5Min_Temp,True,8640)
 	Sample(1,{{ prefix }}RH,FP2)
 {% endfor %}
 	Sample(1,BattV,FP2)
+	Sample(1,ProgStartEpoch,Long)
+{% if model_series == "CR6" %}
+	Sample(1,ChargeInput,FP2)
+	Sample(1,ChargeState,String)
+{% endif %}
 EndTable
