@@ -45,6 +45,7 @@
 					Else
 						SR50AT_{{ sensor_index }}_Snow_Depth = SR50AT_{{ sensor_index }}_Initial_Depth - SR50AT_{{ sensor_index }}_TCDT
 					EndIf
+					If SR50AT_{{ sensor_index }}_Snow_Depth < 0 Then SR50AT_{{ sensor_index }}_Snow_Depth = 0
 				EndIf
 			EndIf
 		EndIf

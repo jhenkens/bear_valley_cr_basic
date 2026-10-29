@@ -10,6 +10,9 @@ shared:
   sr50at_external_temp_compensation:
     - false
     - false
+  sr50at_initial_depth:  # inches, sensor distance to ground
+    - 30.89
+    - 234.53
   sensor_air_temperature: &sensor_air_temperature
     range: mV2500
     air_tf_chan: 1

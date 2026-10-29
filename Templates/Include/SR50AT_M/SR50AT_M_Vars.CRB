@@ -14,7 +14,7 @@ Dim SR50AT_{{ sensor_index }}(11,3)
 'distance value from smallest
 Dim Result_SR50AT_{{ sensor_index }}(11,3)
 
-Dim SR50AT_{{ sensor_index }}_TCDT : Units SR50AT_{{ sensor_index }}_TCDT = inches 'Temperature corrected distance
+Public SR50AT_{{ sensor_index }}_TCDT : Units SR50AT_{{ sensor_index }}_TCDT = inches 'Temperature corrected distance
 Dim SR50AT_{{ sensor_index }}_Q : Units SR50AT_{{ sensor_index }}_Q = unitless 'Quality number
 Dim SR50AT_{{ sensor_index }}_AirTempC : Units SR50AT_{{ sensor_index }}_AirTempC = °C 'Air temperature
 

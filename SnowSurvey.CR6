@@ -123,7 +123,7 @@ Dim SR50AT_1(11,3)
 'distance value from smallest
 Dim Result_SR50AT_1(11,3)
 
-Dim SR50AT_1_TCDT : Units SR50AT_1_TCDT = inches 'Temperature corrected distance
+Public SR50AT_1_TCDT : Units SR50AT_1_TCDT = inches 'Temperature corrected distance
 Dim SR50AT_1_Q : Units SR50AT_1_Q = unitless 'Quality number
 Dim SR50AT_1_AirTempC : Units SR50AT_1_AirTempC = °C 'Air temperature
 
@@ -156,7 +156,7 @@ Dim SR50AT_2(11,3)
 'distance value from smallest
 Dim Result_SR50AT_2(11,3)
 
-Dim SR50AT_2_TCDT : Units SR50AT_2_TCDT = inches 'Temperature corrected distance
+Public SR50AT_2_TCDT : Units SR50AT_2_TCDT = inches 'Temperature corrected distance
 Dim SR50AT_2_Q : Units SR50AT_2_Q = unitless 'Quality number
 Dim SR50AT_2_AirTempC : Units SR50AT_2_AirTempC = °C 'Air temperature
 
@@ -262,8 +262,12 @@ DataTable(TG_15M_Precip,True,2880)
 	FieldNames("Precip")
 	Sample(1,SR50AT_1_Snow_Depth,FP2)
 	FieldNames("IntSnow")
+	Sample(1,SR50AT_1_TCDT,FP2)
+	FieldNames("IntDist")
 	Sample(1,SR50AT_2_Snow_Depth,FP2)
 	FieldNames("TtlSnow")
+	Sample(1,SR50AT_2_TCDT,FP2)
+	FieldNames("TtlDist")
 
 	Sample(1,BaroV_BP,IEEE4)
 	FieldNames("BarometricPressure")
@@ -362,8 +366,8 @@ BeginProg
 	EndIf
 	SR50AT_Counter_1 = 1
 	SR50AT_Counter_2 = 1
-	SR50AT_1_Initial_Depth = 31.03
-	SR50AT_2_Initial_Depth = 235.85
+	SR50AT_1_Initial_Depth = 30.89
+	SR50AT_2_Initial_Depth = 234.53
 	SR50ATCtrl_1 = True
 	SR50ATCtrl_2 = True
 	'Main Scan
@@ -437,6 +441,7 @@ SlowSequence
 					Else
 						SR50AT_1_Snow_Depth = SR50AT_1_Initial_Depth - SR50AT_1_TCDT
 					EndIf
+					If SR50AT_1_Snow_Depth < 0 Then SR50AT_1_Snow_Depth = 0
 				EndIf
 			EndIf
 		EndIf
@@ -481,6 +486,7 @@ SlowSequence
 					Else
 						SR50AT_2_Snow_Depth = SR50AT_2_Initial_Depth - SR50AT_2_TCDT
 					EndIf
+					If SR50AT_2_Snow_Depth < 0 Then SR50AT_2_Snow_Depth = 0
 				EndIf
 			EndIf
 		EndIf
