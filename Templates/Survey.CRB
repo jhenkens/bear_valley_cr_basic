@@ -3,7 +3,7 @@
 
 'Constants
 Const SITE_LOCATION_PRESSURE=74.11727
-Const SR50AT_Minimum_Depth=14 'Minimum depth for SR50AT-M Snow Depth measurement in inches
+Const SR50A_Minimum_Depth=14 'Minimum depth for SR50A-M Snow Depth measurement in inches
 
 'Functions
 
@@ -37,11 +37,11 @@ Public DisableSnowDepth As Boolean
 Dim StartupTime(9)
 
 {% with sensor_index=1 %}
-{% include "Include/SR50AT_M/SR50AT_M_Vars.CRB" %}
+{% include "Include/SR50A_M/SR50A_M_Vars.CRB" %}
 
 {% endwith %}
 {% with sensor_index=2 %}
-{% include "Include/SR50AT_M/SR50AT_M_Vars.CRB" %}
+{% include "Include/SR50A_M/SR50A_M_Vars.CRB" %}
 
 Dim Rain_in : Units Rain_in=inch
 Public BaroVUE(3)
@@ -89,20 +89,20 @@ BeginProg
 	ProgStartEpoch = Status.Timestamp(0,1)
 	{% if enable_precip_and_snow_sensors %}
 	'Default snow depth to disabled for the off-season (June - October) based
-	'on the RTC date at boot.
+	'on the RTC date at boot. 2026 is forced on (the season started early).
 	'RealTime() array: (1)Year (2)Month (3)Day (4)Hour (5)Min (6)Sec (7)uSec (8)DOW (9)DOY
 	RealTime(StartupTime)
-	If StartupTime(2)>=6 AND StartupTime(2)<=10 Then
+	If StartupTime(1)<>2026 AND StartupTime(2)>=6 AND StartupTime(2)<=10 Then
 		DisableSnowDepth = True
 	Else
 		DisableSnowDepth = False
 	EndIf
-	SR50AT_Counter_1 = 1
-	SR50AT_Counter_2 = 1
-	SR50AT_1_Initial_Depth = {{ sr50at_initial_depth[0] }}
-	SR50AT_2_Initial_Depth = {{ sr50at_initial_depth[1] }}
-	SR50ATCtrl_1 = True
-	SR50ATCtrl_2 = True
+	SR50A_1_Counter = 1
+	SR50A_2_Counter = 1
+	SR50A_1_Initial_Depth = {{ sr50a_initial_depth[0] }}
+	SR50A_2_Initial_Depth = {{ sr50a_initial_depth[1] }}
+	SR50A_1_Ctrl = True
+	SR50A_2_Ctrl = True
 	{% endif %}
 	'Main Scan
 	Scan({{ main_scan_interval_count }},{{ main_scan_interval_unit }},1,0)
@@ -140,12 +140,12 @@ BeginProg
 SlowSequence
 	Scan(10,Sec,1,0)
 		{% with sensor_index=1 %}
-		{% include "Include/SR50AT_M/SR50AT_M_Sample.CRB" %}
+		{% include "Include/SR50A_M/SR50A_M_Sample.CRB" %}
 		{% endwith %}
 
 
 		{% with sensor_index=2 %}
-		{% include "Include/SR50AT_M/SR50AT_M_Sample.CRB" %}
+		{% include "Include/SR50A_M/SR50A_M_Sample.CRB" %}
 		{% endwith %}
 
 	NextScan

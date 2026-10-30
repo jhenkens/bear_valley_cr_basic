@@ -16,9 +16,9 @@ DataTable(MW_15M,True,2000)
 	Sample(1,BaroV_BP,IEEE4)
 	Totalize(1,Rain_in,FP2,False)
 	FieldNames("Precip")
-	Sample(1,SR50AT_1_Snow_Depth,FP2)
+	Sample(1,SR50A_1_Snow_Depth,FP2)
 	FieldNames("IntSnow")
-	Sample(1,SR50AT_2_Snow_Depth,FP2)
+	Sample(1,SR50A_2_Snow_Depth,FP2)
 	FieldNames("TtlSnow")
 	{% endif %}
 EndTable

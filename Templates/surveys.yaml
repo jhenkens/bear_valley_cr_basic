@@ -4,13 +4,13 @@ shared:
   panel_frequency_filter: 60
   panel_default_range: mV2500
   legacy_tables: []
-  sr50at_sensor_address:
+  sr50a_sensor_address:
     - C1
     - C3
-  sr50at_external_temp_compensation:
+  sr50a_external_temp_compensation:
     - false
     - false
-  sr50at_initial_depth:  # inches, sensor distance to ground
+  sr50a_initial_depth:  # inches, sensor distance to ground
     - 30.89
     - 234.53
   sensor_air_temperature: &sensor_air_temperature
@@ -72,7 +72,7 @@ stations:
   - station_name: "SnowSurvey"
     model_series: "CR6"
     enable_precip_and_snow_sensors: true
-    sr50at_external_temp_compensation:
+    sr50a_external_temp_compensation:
       - true  # C1 was replaced with an SR50A (no thermistor); compensate manually
       - false
     power_control:

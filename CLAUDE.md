@@ -82,7 +82,7 @@ Templates/
     │   ├── KoalaTop/
     │   ├── SnowSurvey/
     │   └── Grizzly/
-    ├── SR50AT_M/                 # Snow depth sensor code
+    ├── SR50A_M/                  # Snow depth sensor code
     ├── Barometric/               # Pressure sensor code
     ├── Air_Temperature_*.CRB     # Temperature sensor modules
     ├── Windspeed_*.CRB           # Wind sensor modules
@@ -198,7 +198,7 @@ BrHalf(WindDir, 1, mV2500, 2, 1, 1, 2500, 0, _60Hz, 355, 0)
 
 **Serial Digital Interface** (snow depth, barometric):
 ```crbasic
-SDI12Recorder(sr50at_response(), C1, 0, "M!", 1.0, 0.0)
+SDI12Recorder(sr50a_response(), C1, 0, "M!", 1.0, 0.0)
 ```
 
 ### Data Tables
@@ -247,12 +247,12 @@ Uses **two SR50AT sonic snow depth sensors** with sophisticated measurement logi
 **Configuration** in `surveys.yaml`:
 ```yaml
 enable_precip_and_snow_sensors: true
-sr50at_sensor_address: [C1, C3]    # Two sensors on different addresses
+sr50a_sensor_address: [C1, C3]    # Two sensors on different addresses
 ```
 
 **Template files**:
-- `SR50AT_M/SR50AT_M_Vars.CRB` - Arrays for 11 readings per sensor
-- `SR50AT_M/SR50AT_M_Sample.CRB` - Measurement and sorting logic
+- `SR50A_M/SR50A_M_Vars.CRB` - Arrays for 11 readings per sensor
+- `SR50A_M/SR50A_M_Sample.CRB` - Measurement and sorting logic
 
 ## Multi-Sensor Arrays (Grizzly)
 

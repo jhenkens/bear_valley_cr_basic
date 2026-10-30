@@ -1,0 +1,51 @@
+		If DisableSnowDepth
+			SR50A_{{ sensor_index }}_Ctrl = False
+			SR50A_{{ sensor_index }}_Snow_Depth = 0
+		Else
+			'SR50A Sample Code - Sensor # {{ sensor_index }}
+			'Automated snow depth measurement. Must occur two minutes before
+			'actual storage time to get 11 measurements completed.
+			If TimeIntoInterval (13,15,Min) Then
+				SR50A_{{ sensor_index }}_Ctrl = True
+			EndIf
+			'Set this flag to true to get the initial distance from the SR50A
+			'to the ground.
+			If SR50A_{{ sensor_index }}_CalculateNewInitialDepth Then SR50A_{{ sensor_index }}_Ctrl = True
+			'Logic to make 11 snow depth measurements, sort them, and store
+			'the corrected values.
+			If SR50A_{{ sensor_index }}_Ctrl Then
+			'SR50A Sonic Ranging Sensor (SDI-12 Output) measurements
+			'MDT, MQ, & MAir
+				SDI12Recorder(SR50A_{{ sensor_index }}_M(),{{ sr50a_sensor_address[sensor_index-1] }},"0","M7!",1,0,-1)
+				'Load the array to be sorted.
+				SR50A_{{ sensor_index }}_Raw(SR50A_{{ sensor_index }}_Counter,1) = SR50A_{{ sensor_index }}_M(1)
+				SR50A_{{ sensor_index }}_Raw(SR50A_{{ sensor_index }}_Counter,2) = SR50A_{{ sensor_index }}_M(2)
+				SR50A_{{ sensor_index }}_Raw(SR50A_{{ sensor_index }}_Counter,3) = SR50A_{{ sensor_index }}_M(3)
+				SR50A_{{ sensor_index }}_Counter += 1
+				If SR50A_{{ sensor_index }}_Counter > 11 Then
+					SR50A_{{ sensor_index }}_Counter = 1
+					SR50A_{{ sensor_index }}_Ctrl = False
+					SortSpa (SR50A_{{ sensor_index }}_Sorted(1,1),11,SR50A_{{ sensor_index }}_Raw(1,1),2)
+					SR50A_{{ sensor_index }}_TCDT = SR50A_{{ sensor_index }}_Sorted(6,1)
+					SR50A_{{ sensor_index }}_Q = SR50A_{{ sensor_index }}_Sorted(6,2)
+					SR50A_{{ sensor_index }}_AirTempC = SR50A_{{ sensor_index }}_Sorted(6,3)
+{% if sr50a_external_temp_compensation[sensor_index-1] %}
+					'This sensor has no internal thermistor (SR50A, not SR50AT), so its
+					'reported distance and air temperature are uncompensated. Correct the
+					'distance manually using the station's own air temperature sensor.
+					SR50A_{{ sensor_index }}_AirTempC = (5/9)*(AirTF-32)
+					SR50A_{{ sensor_index }}_TCDT = SR50A_{{ sensor_index }}_TCDT * SQR((SR50A_{{ sensor_index }}_AirTempC+273.15)/273.15)
+{% endif %}
+					If SR50A_{{ sensor_index }}_CalculateNewInitialDepth Then
+						SR50A_{{ sensor_index }}_Initial_Depth = SR50A_{{ sensor_index }}_TCDT
+						SR50A_{{ sensor_index }}_CalculateNewInitialDepth = False
+					EndIf
+					If SR50A_{{ sensor_index }}_TCDT < SR50A_Minimum_Depth Then
+						SR50A_{{ sensor_index }}_Snow_Depth = SR50A_{{ sensor_index }}_Initial_Depth - SR50A_Minimum_Depth
+					Else
+						SR50A_{{ sensor_index }}_Snow_Depth = SR50A_{{ sensor_index }}_Initial_Depth - SR50A_{{ sensor_index }}_TCDT
+					EndIf
+					If SR50A_{{ sensor_index }}_Snow_Depth < 0 Then SR50A_{{ sensor_index }}_Snow_Depth = 0
+				EndIf
+			EndIf
+		EndIf

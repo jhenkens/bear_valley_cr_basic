@@ -6,10 +6,10 @@ DataTable(Table1,True,-1)
 	Totalize(1,Rain_in,FP2,False)
 	FieldNames("Precip")
 
-	Sample(1,SR50AT_1_Snow_Depth,FP2)
+	Sample(1,SR50A_1_Snow_Depth,FP2)
 	FieldNames("IntSnow")
 
-	Sample(1,SR50AT_2_Snow_Depth,FP2)
+	Sample(1,SR50A_2_Snow_Depth,FP2)
 	FieldNames("TtlSnow")
 
 	Sample(1,BattV,FP2)
@@ -18,19 +18,19 @@ DataTable(Table1,True,-1)
 	Sample(1,PTemp_C,FP2)
 	FieldNames("CR6T_C")
 
-	Sample(1,SR50AT_2_AirTempC,FP2)
+	Sample(1,SR50A_2_AirTempC,FP2)
 	FieldNames("TtlAirTC")
 
-	Sample(1,SR50AT_1_TCDT,FP2)
+	Sample(1,SR50A_1_TCDT,FP2)
 	FieldNames("IntDist")
 
-	Sample(1,SR50AT_1_Q,FP2)
+	Sample(1,SR50A_1_Q,FP2)
 	FieldNames("IntQ")
 
-	Sample(1,SR50AT_2_TCDT,FP2)
+	Sample(1,SR50A_2_TCDT,FP2)
 	FieldNames("TtlDist")
 
-	Sample(1,SR50AT_2_Q,FP2)
+	Sample(1,SR50A_2_Q,FP2)
 	FieldNames("TtlQ")
 
 	Average(1,WS_mph,FP2,False)

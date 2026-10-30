@@ -1,0 +1,33 @@
+
+'SR50A Variable Code - Sensor # {{ sensor_index }}
+'Single measured values.
+Public SR50A_{{ sensor_index }}_M(3)
+Alias SR50A_{{ sensor_index }}_M(1) = SR50A_{{ sensor_index }}_DT_M : Units SR50A_{{ sensor_index }}_DT_M = inches 'Distance from the SR50A.
+Alias SR50A_{{ sensor_index }}_M(2) = SR50A_{{ sensor_index }}_Q_M : Units SR50A_{{ sensor_index }}_Q_M = unitless 'Quality number.
+Alias SR50A_{{ sensor_index }}_M(3) = SR50A_{{ sensor_index }}_Air_M : Units SR50A_{{ sensor_index }}_Air_M = °C 'Air temperature.
+'Array to hold 11 SR50A measurements composed of a distance and
+'quality number, and air temperature.
+Public SR50A_{{ sensor_index }}_Raw(11,3)
+
+'Sorted array of 11 SR50A measurements composed of a distance and
+'quality number, and temperature. Measurements are sorted by the 
+'distance value from smallest
+Public SR50A_{{ sensor_index }}_Sorted(11,3)
+
+Public SR50A_{{ sensor_index }}_TCDT : Units SR50A_{{ sensor_index }}_TCDT = inches 'Temperature corrected distance
+Dim SR50A_{{ sensor_index }}_Q : Units SR50A_{{ sensor_index }}_Q = unitless 'Quality number
+Dim SR50A_{{ sensor_index }}_AirTempC : Units SR50A_{{ sensor_index }}_AirTempC = °C 'Air temperature
+
+Public SR50A_{{ sensor_index }}_Initial_Depth : Units SR50A_{{ sensor_index }}_Initial_Depth = inches 'Distance to ground.
+Public SR50A_{{ sensor_index }}_Snow_Depth : Units SR50A_{{ sensor_index }}_Snow_Depth = inches 'Snow depth.
+
+'Controls SR50A measurement. This flag can be manually controlled to
+'run tests in the field or is automatically set 2 minutes before the
+'hourly data storage interval. This is done so 11 measurements can
+'be made and sorted before the values are stored.
+Public SR50A_{{ sensor_index }}_Ctrl As Boolean
+'Set this flag to measure and store the initial distance from the
+'SR50A to the ground.
+Public SR50A_{{ sensor_index }}_CalculateNewInitialDepth As Boolean
+
+Dim SR50A_{{ sensor_index }}_Counter 'used as a counter

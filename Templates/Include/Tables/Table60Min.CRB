@@ -23,9 +23,9 @@ DataTable(Table60Min,True,720)
 	{% if enable_precip_and_snow_sensors %}
 	Totalize(1,Rain_in,FP2,False)
 	FieldNames("Precip")
-	Sample(1,SR50AT_1_Snow_Depth,FP2)
+	Sample(1,SR50A_1_Snow_Depth,FP2)
 	FieldNames("IntSnow")
-	Sample(1,SR50AT_2_Snow_Depth,FP2)
+	Sample(1,SR50A_2_Snow_Depth,FP2)
 	FieldNames("TtlSnow")
 	{% endif %}
 
