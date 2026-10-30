@@ -116,12 +116,12 @@ Alias SR50AT_1_M(2) = Q_1_M : Units Q_1_M = unitless 'Quality number.
 Alias SR50AT_1_M(3) = Air_1_M : Units Air_1_M = °C 'Air temperature.
 'Array to hold 11 SR50AT measurements composed of a distance and
 'quality number, and air temperature.
-Dim SR50AT_1(11,3)
+Public SR50AT_1(11,3)
 
 'Sorted array of 11 SR50AT measurements composed of a distance and
 'quality number, and temperature. Measurements are sorted by the 
 'distance value from smallest
-Dim Result_SR50AT_1(11,3)
+Public Result_SR50AT_1(11,3)
 
 Public SR50AT_1_TCDT : Units SR50AT_1_TCDT = inches 'Temperature corrected distance
 Dim SR50AT_1_Q : Units SR50AT_1_Q = unitless 'Quality number
@@ -149,12 +149,12 @@ Alias SR50AT_2_M(2) = Q_2_M : Units Q_2_M = unitless 'Quality number.
 Alias SR50AT_2_M(3) = Air_2_M : Units Air_2_M = °C 'Air temperature.
 'Array to hold 11 SR50AT measurements composed of a distance and
 'quality number, and air temperature.
-Dim SR50AT_2(11,3)
+Public SR50AT_2(11,3)
 
 'Sorted array of 11 SR50AT measurements composed of a distance and
 'quality number, and temperature. Measurements are sorted by the 
 'distance value from smallest
-Dim Result_SR50AT_2(11,3)
+Public Result_SR50AT_2(11,3)
 
 Public SR50AT_2_TCDT : Units SR50AT_2_TCDT = inches 'Temperature corrected distance
 Dim SR50AT_2_Q : Units SR50AT_2_Q = unitless 'Quality number

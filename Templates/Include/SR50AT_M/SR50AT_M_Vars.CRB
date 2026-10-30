@@ -7,12 +7,12 @@ Alias SR50AT_{{ sensor_index }}_M(2) = Q_{{ sensor_index }}_M : Units Q_{{ senso
 Alias SR50AT_{{ sensor_index }}_M(3) = Air_{{ sensor_index }}_M : Units Air_{{ sensor_index }}_M = °C 'Air temperature.
 'Array to hold 11 SR50AT measurements composed of a distance and
 'quality number, and air temperature.
-Dim SR50AT_{{ sensor_index }}(11,3)
+Public SR50AT_{{ sensor_index }}(11,3)
 
 'Sorted array of 11 SR50AT measurements composed of a distance and
 'quality number, and temperature. Measurements are sorted by the 
 'distance value from smallest
-Dim Result_SR50AT_{{ sensor_index }}(11,3)
+Public Result_SR50AT_{{ sensor_index }}(11,3)
 
 Public SR50AT_{{ sensor_index }}_TCDT : Units SR50AT_{{ sensor_index }}_TCDT = inches 'Temperature corrected distance
 Dim SR50AT_{{ sensor_index }}_Q : Units SR50AT_{{ sensor_index }}_Q = unitless 'Quality number
