@@ -75,9 +75,6 @@ stations:
     sr50a_external_temp_compensation:
       - true  # C1 was replaced with an SR50A (no thermistor); compensate manually
       - false
-    power_control:
-      enabled: true
-      meanwell_charger_pin: U9
     legacy_tables:
       - name: Table1
         file: Include/Stations/SnowSurvey/Table1.CRB

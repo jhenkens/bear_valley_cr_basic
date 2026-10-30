@@ -4,6 +4,8 @@
 'Constants
 Const SITE_LOCATION_PRESSURE=74.11727
 Const SR50A_Minimum_Depth=14 'Minimum depth for SR50A-M Snow Depth measurement in inches
+Const SR50A_Maximum_Quality=250 'Readings with a higher quality number (weaker echo) are discarded
+Const SR50A_Sort_Filler=1E9 'Distance given to unused readings while sorting so they sort last (NAN breaks the sort)
 
 'Functions
 
@@ -12,6 +14,12 @@ Const SR50A_Minimum_Depth=14 'Minimum depth for SR50A-M Snow Depth measurement i
 {% include find_template("Functions/DewPoint_Function.CRB") %}
 
 {% include find_template("Functions/WindChill_Function.CRB") %}
+
+{% if enable_precip_and_snow_sensors %}
+{% include find_template("Functions/SR50A_TempCorrect_Function.CRB") %}
+
+{% include find_template("Functions/SR50A_SnowDepth_Function.CRB") %}
+{% endif %}
 
 'Declare Variables and Units
 {% include find_template("Air_Temperature_Vars.CRB") %}
@@ -33,7 +41,6 @@ Dim Temp_F
 
 
 {% if enable_precip_and_snow_sensors %}
-Public DisableSnowDepth As Boolean
 Dim StartupTime(9)
 
 {% with sensor_index=1 %}
@@ -93,12 +100,27 @@ BeginProg
 	'RealTime() array: (1)Year (2)Month (3)Day (4)Hour (5)Min (6)Sec (7)uSec (8)DOW (9)DOY
 	RealTime(StartupTime)
 	If StartupTime(1)<>2026 AND StartupTime(2)>=6 AND StartupTime(2)<=10 Then
-		DisableSnowDepth = True
+		SR50A_1_DisableSnowDepth = True
+		SR50A_2_DisableSnowDepth = True
 	Else
-		DisableSnowDepth = False
+		SR50A_1_DisableSnowDepth = False
+		SR50A_2_DisableSnowDepth = False
 	EndIf
-	SR50A_1_Counter = 1
-	SR50A_2_Counter = 1
+	'No data until the first burst of readings completes.
+	SR50A_1_Attempt = 0
+	SR50A_1_Valid = 0
+	SR50A_2_Attempt = 0
+	SR50A_2_Valid = 0
+	SR50A_1_Valid_Count = 0
+	SR50A_2_Valid_Count = 0
+	Move(SR50A_1_Raw(1,1),33,NAN,1)
+	Move(SR50A_2_Raw(1,1),33,NAN,1)
+	SR50A_1_TCDT = NAN
+	SR50A_2_TCDT = NAN
+	SR50A_1_Q = NAN
+	SR50A_2_Q = NAN
+	SR50A_1_Snow_Depth = NAN
+	SR50A_2_Snow_Depth = NAN
 	SR50A_1_Initial_Depth = {{ sr50a_initial_depth[0] }}
 	SR50A_2_Initial_Depth = {{ sr50a_initial_depth[1] }}
 	SR50A_1_Ctrl = True

@@ -1,0 +1,15 @@
+'Calculate snow depth from the temperature corrected distance. A distance
+'inside the minimum depth is treated as the minimum, and the result is never
+'negative.
+Function SR50A_SnowDepth(Distance, InitialDepth)
+	Dim _Depth
+
+	If Distance < SR50A_Minimum_Depth Then
+		_Depth = InitialDepth - SR50A_Minimum_Depth
+	Else
+		_Depth = InitialDepth - Distance
+	EndIf
+	If _Depth < 0 Then _Depth = 0
+
+	Return _Depth
+EndFunction

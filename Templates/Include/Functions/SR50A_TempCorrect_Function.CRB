@@ -1,0 +1,9 @@
+'Temperature correct an SR50A distance (no internal thermistor) using an
+'external air temperature, scaling the speed of sound from 0 degC.
+Function SR50A_TempCorrect(Distance, AirTempC)
+	Dim _TCDT
+
+	_TCDT = Distance*SQR((AirTempC+273.15)/273.15)
+
+	Return _TCDT
+EndFunction

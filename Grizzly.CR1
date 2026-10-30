@@ -4,6 +4,8 @@
 'Constants
 Const SITE_LOCATION_PRESSURE=74.11727
 Const SR50A_Minimum_Depth=14 'Minimum depth for SR50A-M Snow Depth measurement in inches
+Const SR50A_Maximum_Quality=250 'Readings with a higher quality number (weaker echo) are discarded
+Const SR50A_Sort_Filler=1E9 'Distance given to unused readings while sorting so they sort last (NAN breaks the sort)
 
 'Functions
 
@@ -81,6 +83,7 @@ Function WindChill_Calc(AirTF, WS_mph)
 
 	Return _Wc_F
 EndFunction
+
 
 'Declare Variables and Units
 'T11_

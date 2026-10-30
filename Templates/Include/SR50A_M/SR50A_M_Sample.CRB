@@ -1,5 +1,8 @@
-		If DisableSnowDepth
+		If SR50A_{{ sensor_index }}_DisableSnowDepth
 			SR50A_{{ sensor_index }}_Ctrl = False
+			SR50A_{{ sensor_index }}_Attempt = 0
+			SR50A_{{ sensor_index }}_Valid = 0
+			SR50A_{{ sensor_index }}_Valid_Count = 0
 			SR50A_{{ sensor_index }}_Snow_Depth = 0
 		Else
 			'SR50A Sample Code - Sensor # {{ sensor_index }}
@@ -7,45 +10,80 @@
 			'actual storage time to get 11 measurements completed.
 			If TimeIntoInterval (13,15,Min) Then
 				SR50A_{{ sensor_index }}_Ctrl = True
+				'Always start a fresh burst here, even if one is in progress (for
+				'example the burst started at boot), so the readings span the two
+				'minutes before storage. Attempt = 0 makes the burst-start reset run.
+				SR50A_{{ sensor_index }}_Attempt = 0
 			EndIf
 			'Set this flag to true to get the initial distance from the SR50A
 			'to the ground.
 			If SR50A_{{ sensor_index }}_CalculateNewInitialDepth Then SR50A_{{ sensor_index }}_Ctrl = True
-			'Logic to make 11 snow depth measurements, sort them, and store
-			'the corrected values.
+			'Logic to make 11 snow depth measurements, keep the usable ones, sort
+			'them, and store the corrected values.
 			If SR50A_{{ sensor_index }}_Ctrl Then
-			'SR50A Sonic Ranging Sensor (SDI-12 Output) measurements
-			'MDT, MQ, & MAir
+				'A new burst begins when none is in progress (no readings yet, or the
+				'last burst finished): clear out the previous burst. A burst already
+				'in progress (1-10 readings taken) is never restarted.
+				If SR50A_{{ sensor_index }}_Attempt = 0 Or SR50A_{{ sensor_index }}_Attempt >= 11 Then
+					SR50A_{{ sensor_index }}_Attempt = 0
+					SR50A_{{ sensor_index }}_Valid = 0
+					Move(SR50A_{{ sensor_index }}_Raw(1,1),33,NAN,1)
+				EndIf
+				'SR50A Sonic Ranging Sensor (SDI-12 Output) measurements
+				'MDT, MQ, & MAir
 				SDI12Recorder(SR50A_{{ sensor_index }}_M(),{{ sr50a_sensor_address[sensor_index-1] }},"0","M7!",1,0,-1)
-				'Load the array to be sorted.
-				SR50A_{{ sensor_index }}_Raw(SR50A_{{ sensor_index }}_Counter,1) = SR50A_{{ sensor_index }}_M(1)
-				SR50A_{{ sensor_index }}_Raw(SR50A_{{ sensor_index }}_Counter,2) = SR50A_{{ sensor_index }}_M(2)
-				SR50A_{{ sensor_index }}_Raw(SR50A_{{ sensor_index }}_Counter,3) = SR50A_{{ sensor_index }}_M(3)
-				SR50A_{{ sensor_index }}_Counter += 1
-				If SR50A_{{ sensor_index }}_Counter > 11 Then
-					SR50A_{{ sensor_index }}_Counter = 1
-					SR50A_{{ sensor_index }}_Ctrl = False
-					SortSpa (SR50A_{{ sensor_index }}_Sorted(1,1),11,SR50A_{{ sensor_index }}_Raw(1,1),2)
-					SR50A_{{ sensor_index }}_TCDT = SR50A_{{ sensor_index }}_Sorted(6,1)
-					SR50A_{{ sensor_index }}_Q = SR50A_{{ sensor_index }}_Sorted(6,2)
-					SR50A_{{ sensor_index }}_AirTempC = SR50A_{{ sensor_index }}_Sorted(6,3)
-{% if sr50a_external_temp_compensation[sensor_index-1] %}
-					'This sensor has no internal thermistor (SR50A, not SR50AT), so its
-					'reported distance and air temperature are uncompensated. Correct the
-					'distance manually using the station's own air temperature sensor.
-					SR50A_{{ sensor_index }}_AirTempC = (5/9)*(AirTF-32)
-					SR50A_{{ sensor_index }}_TCDT = SR50A_{{ sensor_index }}_TCDT * SQR((SR50A_{{ sensor_index }}_AirTempC+273.15)/273.15)
-{% endif %}
-					If SR50A_{{ sensor_index }}_CalculateNewInitialDepth Then
-						SR50A_{{ sensor_index }}_Initial_Depth = SR50A_{{ sensor_index }}_TCDT
-						SR50A_{{ sensor_index }}_CalculateNewInitialDepth = False
-					EndIf
-					If SR50A_{{ sensor_index }}_TCDT < SR50A_Minimum_Depth Then
-						SR50A_{{ sensor_index }}_Snow_Depth = SR50A_{{ sensor_index }}_Initial_Depth - SR50A_Minimum_Depth
+				SR50A_{{ sensor_index }}_Attempt += 1
+				'Keep only usable readings. A quality of 0 means no echo was
+				'received; a high quality number means a weak or ambiguous echo.
+				If SR50A_{{ sensor_index }}_DT_M = NAN Or SR50A_{{ sensor_index }}_Q_M = NAN Or SR50A_{{ sensor_index }}_Q_M = 0 Or SR50A_{{ sensor_index }}_Q_M > SR50A_Maximum_Quality Then
+					'Discard this reading.
+				Else
+					SR50A_{{ sensor_index }}_Valid += 1
+					SR50A_{{ sensor_index }}_Raw(SR50A_{{ sensor_index }}_Valid,1) = SR50A_{{ sensor_index }}_M(1)
+					SR50A_{{ sensor_index }}_Raw(SR50A_{{ sensor_index }}_Valid,2) = SR50A_{{ sensor_index }}_M(2)
+					SR50A_{{ sensor_index }}_Raw(SR50A_{{ sensor_index }}_Valid,3) = SR50A_{{ sensor_index }}_M(3)
+				EndIf
+				If SR50A_{{ sensor_index }}_Attempt >= 11 Then
+					'Burst complete.
+					SR50A_{{ sensor_index }}_Valid_Count = SR50A_{{ sensor_index }}_Valid
+					If SR50A_{{ sensor_index }}_Valid = 0 Then
+						'No usable readings in this burst: report no data.
+						SR50A_{{ sensor_index }}_Median_Row = 0
+						SR50A_{{ sensor_index }}_TCDT = NAN
+						SR50A_{{ sensor_index }}_Q = NAN
+						SR50A_{{ sensor_index }}_AirTempC = NAN
+						SR50A_{{ sensor_index }}_Snow_Depth = NAN
 					Else
-						SR50A_{{ sensor_index }}_Snow_Depth = SR50A_{{ sensor_index }}_Initial_Depth - SR50A_{{ sensor_index }}_TCDT
+						'Median of the usable readings.
+						For SR50A_{{ sensor_index }}_I = 1 To 11
+							If SR50A_{{ sensor_index }}_I <= SR50A_{{ sensor_index }}_Valid Then
+								SR50A_{{ sensor_index }}_Dist(SR50A_{{ sensor_index }}_I) = SR50A_{{ sensor_index }}_Raw(SR50A_{{ sensor_index }}_I,1)
+							Else
+								SR50A_{{ sensor_index }}_Dist(SR50A_{{ sensor_index }}_I) = SR50A_Sort_Filler
+							EndIf
+						Next
+						'SortSpaIndexed gives the sorted distances and each one's original row.
+						SortSpaIndexed(SR50A_{{ sensor_index }}_Sorted,11,SR50A_{{ sensor_index }}_Dist)
+						'The usable readings sort first, so the median is this far in.
+						SR50A_{{ sensor_index }}_MedianPosition = Int(SR50A_{{ sensor_index }}_Valid/2)+1
+						SR50A_{{ sensor_index }}_Median_Row = SR50A_{{ sensor_index }}_Sorted(SR50A_{{ sensor_index }}_MedianPosition,2)
+						SR50A_{{ sensor_index }}_TCDT = SR50A_{{ sensor_index }}_Raw(SR50A_{{ sensor_index }}_Median_Row,1)
+						SR50A_{{ sensor_index }}_Q = SR50A_{{ sensor_index }}_Raw(SR50A_{{ sensor_index }}_Median_Row,2)
+						SR50A_{{ sensor_index }}_AirTempC = SR50A_{{ sensor_index }}_Raw(SR50A_{{ sensor_index }}_Median_Row,3)
+{% if sr50a_external_temp_compensation[sensor_index-1] %}
+						'This sensor has no internal thermistor (SR50A, not SR50AT), so its
+						'reported distance and air temperature are uncompensated. Correct the
+						'distance manually using the station's own air temperature sensor.
+						SR50A_{{ sensor_index }}_AirTempC = (5/9)*(AirTF-32)
+						SR50A_{{ sensor_index }}_TCDT = SR50A_TempCorrect(SR50A_{{ sensor_index }}_TCDT,SR50A_{{ sensor_index }}_AirTempC)
+{% endif %}
+						If SR50A_{{ sensor_index }}_CalculateNewInitialDepth Then
+							SR50A_{{ sensor_index }}_Initial_Depth = SR50A_{{ sensor_index }}_TCDT
+						EndIf
+						SR50A_{{ sensor_index }}_Snow_Depth = SR50A_SnowDepth(SR50A_{{ sensor_index }}_TCDT,SR50A_{{ sensor_index }}_Initial_Depth)
 					EndIf
-					If SR50A_{{ sensor_index }}_Snow_Depth < 0 Then SR50A_{{ sensor_index }}_Snow_Depth = 0
+					SR50A_{{ sensor_index }}_CalculateNewInitialDepth = False
+					SR50A_{{ sensor_index }}_Ctrl = False
 				EndIf
 			EndIf
 		EndIf

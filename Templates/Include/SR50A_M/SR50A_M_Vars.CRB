@@ -1,25 +1,33 @@
-
 'SR50A Variable Code - Sensor # {{ sensor_index }}
 'Single measured values.
 Public SR50A_{{ sensor_index }}_M(3)
 Alias SR50A_{{ sensor_index }}_M(1) = SR50A_{{ sensor_index }}_DT_M : Units SR50A_{{ sensor_index }}_DT_M = inches 'Distance from the SR50A.
 Alias SR50A_{{ sensor_index }}_M(2) = SR50A_{{ sensor_index }}_Q_M : Units SR50A_{{ sensor_index }}_Q_M = unitless 'Quality number.
 Alias SR50A_{{ sensor_index }}_M(3) = SR50A_{{ sensor_index }}_Air_M : Units SR50A_{{ sensor_index }}_Air_M = °C 'Air temperature.
-'Array to hold 11 SR50A measurements composed of a distance and
-'quality number, and air temperature.
+'Array to hold up to 11 usable SR50A measurements composed of a distance,
+'quality number, and air temperature. Only the first SR50A_{{ sensor_index }}_Valid rows
+'hold measurements from the current burst; the rest are NAN.
 Public SR50A_{{ sensor_index }}_Raw(11,3)
 
-'Sorted array of 11 SR50A measurements composed of a distance and
-'quality number, and temperature. Measurements are sorted by the 
-'distance value from smallest
-Public SR50A_{{ sensor_index }}_Sorted(11,3)
+'Row of SR50A_{{ sensor_index }}_Raw that holds the median distance of the last completed burst.
+Public SR50A_{{ sensor_index }}_Median_Row As Long
+'Scratch arrays for finding the median: the distances (unused slots hold a large
+'filler so they sort last) and the sorted distances with their original rows.
+Dim SR50A_{{ sensor_index }}_Dist(11)
+Dim SR50A_{{ sensor_index }}_Sorted(11,2)
+Dim SR50A_{{ sensor_index }}_I As Long
+Dim SR50A_{{ sensor_index }}_MedianPosition As Long
 
 Public SR50A_{{ sensor_index }}_TCDT : Units SR50A_{{ sensor_index }}_TCDT = inches 'Temperature corrected distance
 Dim SR50A_{{ sensor_index }}_Q : Units SR50A_{{ sensor_index }}_Q = unitless 'Quality number
 Dim SR50A_{{ sensor_index }}_AirTempC : Units SR50A_{{ sensor_index }}_AirTempC = °C 'Air temperature
 
+Public SR50A_{{ sensor_index }}_Valid_Count As Long : Units SR50A_{{ sensor_index }}_Valid_Count = readings 'Usable readings (out of 11) in the last completed burst.
 Public SR50A_{{ sensor_index }}_Initial_Depth : Units SR50A_{{ sensor_index }}_Initial_Depth = inches 'Distance to ground.
 Public SR50A_{{ sensor_index }}_Snow_Depth : Units SR50A_{{ sensor_index }}_Snow_Depth = inches 'Snow depth.
+
+'Set this flag to disable this sensor (off-season). Snow depth reads 0.
+Public SR50A_{{ sensor_index }}_DisableSnowDepth As Boolean
 
 'Controls SR50A measurement. This flag can be manually controlled to
 'run tests in the field or is automatically set 2 minutes before the
@@ -30,4 +38,5 @@ Public SR50A_{{ sensor_index }}_Ctrl As Boolean
 'SR50A to the ground.
 Public SR50A_{{ sensor_index }}_CalculateNewInitialDepth As Boolean
 
-Dim SR50A_{{ sensor_index }}_Counter 'used as a counter
+Public SR50A_{{ sensor_index }}_Attempt As Long : Units SR50A_{{ sensor_index }}_Attempt = readings 'Readings taken in the current burst (0-11). Keeps the last burst's result until the next burst starts.
+Public SR50A_{{ sensor_index }}_Valid As Long : Units SR50A_{{ sensor_index }}_Valid = readings 'Usable readings stored in the Raw array in the current burst. Keeps the last burst's result until the next burst starts.
